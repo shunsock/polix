@@ -1,5 +1,5 @@
-use std::process::exit;
 use clap::Parser;
+use std::process::exit;
 
 #[derive(Parser, Debug)]
 #[command(author = "shunsock", version = "0.0.1", about = "Prolix, but polished language", long_about = None)]
@@ -26,7 +26,7 @@ pub(crate) struct Request {
 #[derive(Debug)]
 pub(crate) enum Command {
     RunInteractively,
-    RunAtOnce(String)
+    RunAtOnce(String),
 }
 
 impl App {
@@ -56,9 +56,15 @@ impl App {
 
     fn route(&self) -> Request {
         if self.interactive {
-            Request { debug: self.debug, command: Command::RunInteractively }
+            Request {
+                debug: self.debug,
+                command: Command::RunInteractively,
+            }
         } else if let Some(src) = &self.one_liner {
-            Request { debug: self.debug, command: Command::RunAtOnce(src.clone()) }
+            Request {
+                debug: self.debug,
+                command: Command::RunAtOnce(src.clone()),
+            }
         } else if let Some(file_path) = &self.file_path {
             let src: String = match std::fs::read_to_string(file_path) {
                 Ok(src) => src,
@@ -67,7 +73,10 @@ impl App {
                     exit(1);
                 }
             };
-            Request { debug: self.debug, command: Command::RunAtOnce(src) }
+            Request {
+                debug: self.debug,
+                command: Command::RunAtOnce(src),
+            }
         } else {
             println!("[Cli Error] Unhandled route");
             exit(1);

@@ -2,9 +2,12 @@ mod cli;
 mod controller;
 
 use clap::Parser;
-use cli::{ App, Request};
-use controller::{ run_interpreter_at_once::RunInterpreterAtOnce, run_interpreter_interactively::RunInterpreterInteractively };
-use log::{debug};
+use cli::{App, Request};
+use controller::{
+    run_interpreter_at_once::RunInterpreterAtOnce,
+    run_interpreter_interactively::RunInterpreterInteractively,
+};
+use log::debug;
 
 fn main() {
     let r: Request = App::parse().get_user_input();
@@ -22,7 +25,7 @@ fn main() {
     match r.command {
         cli::Command::RunInteractively => {
             RunInterpreterInteractively::new().run();
-        },
+        }
         cli::Command::RunAtOnce(src) => {
             RunInterpreterAtOnce::new(src).run();
         }

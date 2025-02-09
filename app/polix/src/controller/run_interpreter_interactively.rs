@@ -1,4 +1,4 @@
-use log::{debug};
+use log::debug;
 
 pub(crate) struct RunInterpreterInteractively {}
 
