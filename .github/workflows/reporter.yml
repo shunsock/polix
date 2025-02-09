@@ -3,14 +3,8 @@ name: Validate Reporter
 on:
   push:
     branches: [ "main", "develop" ]
-    paths:
-      - "lib/core"
-      - "lib/reporter"
   pull_request:
     branches: [ "main", "develop" ]
-    paths:
-      - "lib/core"
-      - "lib/reporter"
 
 jobs:
   build:
