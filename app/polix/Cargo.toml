@@ -2,5 +2,14 @@
 name = "polix"
 version = "0.0.1"
 edition = "2021"
+description = "AST Based Language Tool"
+readme = "README.md"
+license = "MIT"
+repository = "https://github.com/shunsock/polix"
+homepage = "https://github.com/shunsock/polix"
+documentation = "https://docs.rs/polix"
+keywords = ["cli", "interpreter"]
+categories = ["command-line-utilities", "development-tools"]
 
 [dependencies]
+
