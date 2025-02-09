@@ -55,9 +55,9 @@ impl Reporter {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use core::positive_integer::PositiveInteger64;
     use core::source_code::line::Line;
     use core::source_code::position::Position;
-    use core::positive_integer::PositiveInteger64;
 
     /// ## Test get_line_content return the content of the line
     ///
