@@ -1,2 +1,2 @@
-pub mod line;
-pub mod position;
+pub(super) mod line;
+pub(super) mod position;
