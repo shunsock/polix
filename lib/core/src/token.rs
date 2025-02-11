@@ -1,6 +1,3 @@
-pub mod token_type;
-
-use token_type::TokenType;
 use crate::source_code::line::Line;
 use crate::source_code::position::Position;
 
@@ -8,4 +5,59 @@ pub(super) struct Token {
     pub token_type: TokenType,
     pub line: Line,
     pub position: Position,
+}
+
+#[derive(Debug, PartialEq, Clone)]
+pub(super) enum TokenType {
+    DelimiterAngleLeft,
+    DelimiterAngleRight,
+    DelimiterBraceLeft,
+    DelimiterBraceRight,
+    DelimiterBracketLeft,
+    DelimiterBracketRight,
+    DelimiterParenthesisLeft,
+    DelimiterParenthesisRight,
+    DoubleEqual,
+    DoubleSlash,
+    Eof,
+    Identifiers(String),
+    KeywordAnd,
+    KeywordAs,
+    KeywordElse,
+    KeywordIf,
+    KeywordInterface,
+    KeywordMatch,
+    KeywordMutable,
+    KeywordNot,
+    KeywordOperationBreak,
+    KeywordOperationContinue,
+    KeywordOperationFor,
+    KeywordOperationLoop,
+    KeywordOperationReturn,
+    KeywordOr,
+    KeywordTypeBoolean,
+    KeywordTypeFloat,
+    KeywordTypeFunction,
+    KeywordTypeHash,
+    KeywordTypeInteger,
+    KeywordTypeList,
+    KeywordTypeNone,
+    KeywordTypeOption,
+    KeywordTypeStruct,
+    LiteralBoolean(bool),
+    LiteralCharacter(char),
+    LiteralFloat(f64),
+    LiteralInteger(i32),
+    LiteralNone,
+    LiteralString(String),
+    SeparatorColon,
+    SeparatorComma,
+    SeparatorDot,
+    SeparatorSemicolon,
+    SingleAsterisk,
+    SingleEqual,
+    SingleMinus,
+    SinglePercent,
+    SinglePlus,
+    SingleSlash,
 }
