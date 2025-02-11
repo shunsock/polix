@@ -126,8 +126,14 @@ mod tests {
         let result = scanner.scan();
 
         // Then: the returned Scanner should have an empty source and no tokens.
-        assert!(result.source.is_empty(), "Source should be empty after scanning.");
-        assert!(result.tokens.is_empty(), "No tokens should be produced for an empty source.");
+        assert!(
+            result.source.is_empty(),
+            "Source should be empty after scanning."
+        );
+        assert!(
+            result.tokens.is_empty(),
+            "No tokens should be produced for an empty source."
+        );
     }
 
     /// Test: When the source contains a single token ending with a whitespace,
@@ -142,8 +148,15 @@ mod tests {
         let result = scanner.scan();
 
         // Then: one token with the value "abc" should be produced.
-        assert!(result.source.is_empty(), "Source should be empty after scanning.");
-        assert_eq!(result.tokens.len(), 1, "Exactly one token should be generated.");
+        assert!(
+            result.source.is_empty(),
+            "Source should be empty after scanning."
+        );
+        assert_eq!(
+            result.tokens.len(),
+            1,
+            "Exactly one token should be generated."
+        );
 
         // 直接 tokens[0] は RawToken であるため Option として扱わず、token.token_type を確認する。
         let token = &result.tokens[0];
@@ -176,7 +189,10 @@ mod tests {
         let result = scanner.scan();
 
         // Then: two tokens should be produced: "hello" and "world".
-        assert!(result.source.is_empty(), "Source should be empty after scanning.");
+        assert!(
+            result.source.is_empty(),
+            "Source should be empty after scanning."
+        );
         assert_eq!(result.tokens.len(), 2, "Two tokens should be generated.");
 
         // Check first token:
@@ -214,8 +230,15 @@ mod tests {
         let result = scanner.scan();
 
         // Then: two tokens should be produced: "line1" and "line2".
-        assert!(result.source.is_empty(), "Source should be empty after scanning.");
-        assert_eq!(result.tokens.len(), 2, "Two tokens should be generated when newline is present.");
+        assert!(
+            result.source.is_empty(),
+            "Source should be empty after scanning."
+        );
+        assert_eq!(
+            result.tokens.len(),
+            2,
+            "Two tokens should be generated when newline is present."
+        );
 
         // Check first token:
         let token0 = &result.tokens[0];
@@ -224,7 +247,10 @@ mod tests {
                 assert_eq!(s, "line1", "The first token should be 'line1'.");
             }
             other => {
-                panic!("Unexpected token type for first token with newline: {:?}", other);
+                panic!(
+                    "Unexpected token type for first token with newline: {:?}",
+                    other
+                );
             }
         }
 
@@ -235,7 +261,10 @@ mod tests {
                 assert_eq!(s, "line2", "The second token should be 'line2'.");
             }
             other => {
-                panic!("Unexpected token type for second token with newline: {:?}", other);
+                panic!(
+                    "Unexpected token type for second token with newline: {:?}",
+                    other
+                );
             }
         }
 
