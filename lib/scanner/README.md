@@ -1,14 +1,44 @@
-use crate::source_code::Line;
-use crate::source_code::Position;
+# Polix Scanner
 
-pub(super) struct Token {
-    pub token_type: TokenType,
-    pub line: Line,
-    pub position: Position,
-}
+## About
 
-#[derive(Debug, PartialEq, Clone)]
-pub(super) enum TokenType {
+The Polix Scanner is a scanner of the Polix language.
+
+```
+let f: fn = (x: int): int { return x + 1; }
+```
+
+Following code will be scanned into:
+
+```shell
+[
+    KeywordLet,
+    Identifier("f"),
+    SeparatorColon,
+    KeywordFn,
+    SingleEqual,
+    DelimiterParenthesisLeft,
+    Identifier("x"),
+    SeparatorColon,
+    KeywordTypeInteger,
+    DelimiterParenthesisRight,
+    SeparatorColon,
+    KeywordTypeInteger,
+    DelimiterBraceLeft,
+    KeywordOperationReturn,
+    Identifier("x"),
+    SinglePlus,
+    LiteralInteger(1),
+    SeparatorSemicolon,
+    DelimiterBraceRight,
+    Eof, 
+]
+```
+
+This is the list of all the tokens that the scanner can return
+
+```rust
+enum TokenType {
     DelimiterAngleLeft,
     DelimiterAngleRight,
     DelimiterBraceLeft,
@@ -62,3 +92,4 @@ pub(super) enum TokenType {
     SinglePlus,
     SingleSlash,
 }
+```
