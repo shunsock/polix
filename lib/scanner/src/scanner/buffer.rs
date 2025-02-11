@@ -20,3 +20,8 @@ impl Buffer {
         }
     }
 }
+impl Default for Buffer {
+    fn default() -> Self {
+        Self::new()
+    }
+}
