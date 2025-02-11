@@ -49,10 +49,10 @@ impl Scanner {
         // e.g. buffer = "ab", first_char = "c" -> buffer_updated = "abc"
         let buffer_text_updated: Buffer = Buffer {
             text: buffer_text_updater::update(first_char, self.buffer.text.clone()),
-            current_line: self.buffer.current_line.clone(),
-            current_position: self.buffer.current_position.clone(),
-            start_line: self.buffer.start_line.clone(),
-            start_position: self.buffer.start_position.clone(),
+            current_line: self.buffer.current_line,
+            current_position: self.buffer.current_position,
+            start_line: self.buffer.start_line,
+            start_position: self.buffer.start_position,
         };
 
         // generate token
@@ -60,20 +60,20 @@ impl Scanner {
             first_char,
             rest_characters.clone(),
             self.buffer.clone(),
-            self.line.clone(),
+            self.line,
         );
 
         // update line and position
         // this update is for next iteration,
         // Because we initialized line and position with 1, 1
-        let line_updated: Line = line_updater::update(first_char, self.line.clone());
+        let line_updated: Line = line_updater::update(first_char, self.line);
         let position_updated: Position = self.position.increment();
         let buffer_all_updated: Buffer = Buffer {
             text: buffer_text_updated.text,
-            current_line: line_updated.clone(),
-            current_position: position_updated.clone(),
-            start_line: self.buffer.start_line.clone(),
-            start_position: self.buffer.start_position.clone(),
+            current_line: line_updated,
+            current_position: position_updated,
+            start_line: self.buffer.start_line,
+            start_position: self.buffer.start_position,
         };
 
         let s_ = match token {
