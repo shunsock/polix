@@ -1,7 +1,9 @@
-use crate::buffer::Buffer;
-use crate::token_generator;
+use buffer::Buffer;
 use core::source_code::{Line, Position};
 use core::token::raw_token::RawToken;
+
+pub mod buffer;
+mod token_generator;
 
 #[derive(Clone, Debug)]
 pub struct Scanner {

@@ -1,6 +1,6 @@
 mod identifier;
 
-use crate::buffer::Buffer;
+use crate::scanner::buffer::Buffer;
 use core::source_code::Line;
 use core::token::raw_token::RawToken;
 

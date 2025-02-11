@@ -1,7 +1,7 @@
-use crate::buffer::Buffer;
+use crate::scanner::buffer::Buffer;
 use core::token::raw_token::{RawToken, RawTokenType};
 
-pub(super) fn generate(rest: String, buffer: Buffer) -> Option<RawToken> {
+pub(crate) fn generate(rest: String, buffer: Buffer) -> Option<RawToken> {
     let next_char: char = match rest.chars().next() {
         Some(next_char) => next_char,
         None => {
