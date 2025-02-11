@@ -1,5 +1,5 @@
-use crate::source_code::line::Line;
-use crate::source_code::position::Position;
+use crate::source_code::Line;
+use crate::source_code::Position;
 
 pub(super) struct Token {
     pub token_type: TokenType,
