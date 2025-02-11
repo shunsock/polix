@@ -6,6 +6,4 @@ impl Scanner {
     pub fn new(source: String) -> Scanner {
         Scanner { source }
     }
-
-    
 }
