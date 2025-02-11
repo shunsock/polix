@@ -19,7 +19,7 @@ pub(crate) fn generate_token(
         '\n' => {
             line.increment();
             None
-        },
+        }
         '<' => Some(RawToken::new(
             RawTokenType::AngleLeft,
             line,

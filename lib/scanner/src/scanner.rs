@@ -5,8 +5,8 @@ use core::token::raw_token::RawToken;
 mod buffer;
 mod buffer_text_updater;
 mod line_updater;
-mod token_generator;
 mod position_updater;
+mod token_generator;
 
 #[derive(Clone, Debug)]
 pub struct Scanner {
