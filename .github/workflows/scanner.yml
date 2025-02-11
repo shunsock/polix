@@ -1,4 +1,4 @@
-name: Validate Reporter
+name: Validate Scanner
 
 on:
   push:
