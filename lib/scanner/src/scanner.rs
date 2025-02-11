@@ -6,6 +6,7 @@ mod buffer;
 mod buffer_text_updater;
 mod line_updater;
 mod token_generator;
+mod position_updater;
 
 #[derive(Clone, Debug)]
 pub struct Scanner {
@@ -67,7 +68,7 @@ impl Scanner {
         // this update is for next iteration,
         // Because we initialized line and position with 1, 1
         let line_updated: Line = line_updater::update(first_char, self.line);
-        let position_updated: Position = self.position.increment();
+        let position_updated: Position = position_updater::update(first_char, self.position);
         let buffer_all_updated: Buffer = Buffer {
             text: buffer_text_updated.text,
             current_line: line_updated,
@@ -85,7 +86,13 @@ impl Scanner {
                 Scanner {
                     source: rest_characters,
                     tokens: tokens_updated,
-                    buffer: Buffer::new(),
+                    buffer: Buffer {
+                        text: String::new(),
+                        current_line: line_updated,
+                        current_position: position_updated,
+                        start_line: line_updated,
+                        start_position: position_updated,
+                    },
                     line: line_updated,
                     position: position_updated,
                 }

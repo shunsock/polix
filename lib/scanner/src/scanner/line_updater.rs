@@ -1,8 +1,8 @@
 use core::source_code::Line;
 
-pub(super) fn update(c: char, line: Line) -> Line {
+pub(super) fn update(c: char, l: Line) -> Line {
     match c {
-        '\n' => line.increment(),
-        _ => line,
+        '\n' => l.increment(),
+        _ => l,
     }
 }
