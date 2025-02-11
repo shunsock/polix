@@ -31,13 +31,10 @@ pub enum RawTokenType {
     Comma,
     Dot,
     Eof,
-    Equal,
     Identifier(String),
-    Minus,
     ParenthesisLeft,
     ParenthesisRight,
     Percent,
     Plus,
     Semicolon,
-    Slash,
 }
