@@ -1,6 +1,6 @@
 use crate::positive_integer::{PositiveIntCreationError, PositiveInteger32};
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Line {
     pub number: PositiveInteger32,
 }
@@ -17,7 +17,7 @@ impl Line {
     }
 }
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Position {
     pub number: PositiveInteger32,
 }

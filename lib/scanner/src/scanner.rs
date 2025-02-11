@@ -3,9 +3,9 @@ use core::source_code::{Line, Position};
 use core::token::raw_token::RawToken;
 
 mod buffer;
-mod token_generator;
-mod line_updater;
 mod buffer_text_updater;
+mod line_updater;
+mod token_generator;
 
 #[derive(Clone, Debug)]
 pub struct Scanner {
@@ -35,7 +35,9 @@ impl Scanner {
 impl Scanner {
     pub fn scan(self) -> Scanner {
         // return if the all source has been consumed
-        if self.clone().is_at_end() { return self; }
+        if self.clone().is_at_end() {
+            return self;
+        }
 
         // split characters into first character and rest of the characters
         // e.g. "abc" -> ('a', "bc")
