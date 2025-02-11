@@ -1,5 +1,5 @@
-use core::source_code::line::Line;
-use core::source_code::position::Position;
+use core::source_code::Line;
+use core::source_code::Position;
 
 /// ## Reporter
 /// `Reporter` is a struct that is responsible for reporting errors and warnings to the user.
@@ -42,7 +42,7 @@ impl Reporter {
     }
 
     fn generate_caret(&self, position: Position) -> String {
-        let position: u64 = position.number.value;
+        let position: u32 = position.number.value;
         let mut caret: String = String::new();
         for _ in 0..position {
             caret.push(' ');
@@ -55,9 +55,8 @@ impl Reporter {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use core::positive_integer::PositiveInteger64;
-    use core::source_code::line::Line;
-    use core::source_code::position::Position;
+    use core::source_code::Line;
+    use core::source_code::Position;
 
     /// ## Test get_line_content return the content of the line
     ///
@@ -70,7 +69,7 @@ mod tests {
         // Given
         let src: String = "first line\nsecond line\nthird line".to_string();
         let reporter: Reporter = Reporter::new(src);
-        let line: Line = Line::new(PositiveInteger64::new(2).unwrap());
+        let line: Line = Line::new(2).unwrap();
 
         // When
         let content: String = reporter.get_line_content(line);
@@ -88,7 +87,7 @@ mod tests {
         // Given
         let src: String = "only one line".to_string();
         let reporter: Reporter = Reporter::new(src);
-        let line: Line = Line::new(PositiveInteger64::new(100).unwrap());
+        let line: Line = Line::new(100).unwrap();
 
         // When
         reporter.get_line_content(line);
@@ -107,7 +106,7 @@ mod tests {
 
         // Given
         let reporter: Reporter = Reporter::new("dummy".to_string());
-        let position: Position = Position::new(PositiveInteger64::new(4).unwrap());
+        let position: Position = Position::new(4).unwrap();
 
         // When
         let caret: String = reporter.generate_caret(position);
