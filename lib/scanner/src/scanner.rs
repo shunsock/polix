@@ -2,8 +2,10 @@ use buffer::Buffer;
 use core::source_code::{Line, Position};
 use core::token::raw_token::RawToken;
 
-pub mod buffer;
+mod buffer;
 mod token_generator;
+mod line_updater;
+mod buffer_text_updater;
 
 #[derive(Clone, Debug)]
 pub struct Scanner {
@@ -31,83 +33,67 @@ impl Scanner {
 }
 
 pub fn scan(s: Scanner) -> Scanner {
-    match s.clone().is_at_end() {
-        true => s.clone(),
-        false => {
-            // split characters into first character and rest of the characters
-            // e.g. "abc" -> ('a', "bc")
-            // calling unwrap() is safe here because we know that the string is not empty
-            let first_char: char = s.source.chars().next().unwrap();
-            let rest_characters: String = s.source.chars().skip(1).collect();
+    // return if the all source has been consumed
+    if s.clone().is_at_end() { return s; }
 
-            // concat buffer and first character
-            // e.g. buffer = "ab", first_char = "c" -> buffer_updated = "abc"
-            let buffer_text_updated: Buffer = Buffer {
-                text: buffer_text_updater(first_char, s.buffer.text.clone()),
-                current_line: s.buffer.current_line.clone(),
-                current_position: s.buffer.current_position.clone(),
-                start_line: s.buffer.start_line.clone(),
-                start_position: s.buffer.start_position.clone(),
-            };
+    // split characters into first character and rest of the characters
+    // e.g. "abc" -> ('a', "bc")
+    // calling unwrap() is safe here because we know that the string is not empty
+    let first_char: char = s.source.chars().next().unwrap();
+    let rest_characters: String = s.source.chars().skip(1).collect();
 
-            // generate token
-            let token: Option<RawToken> = token_generator::generate_token(
-                first_char,
-                rest_characters.clone(),
-                s.buffer.clone(),
-                s.line.clone(),
-            );
+    // concat buffer and first character
+    // e.g. buffer = "ab", first_char = "c" -> buffer_updated = "abc"
+    let buffer_text_updated: Buffer = Buffer {
+        text: buffer_text_updater::update(first_char, s.buffer.text.clone()),
+        current_line: s.buffer.current_line.clone(),
+        current_position: s.buffer.current_position.clone(),
+        start_line: s.buffer.start_line.clone(),
+        start_position: s.buffer.start_position.clone(),
+    };
 
-            // update line and position
-            // this update is for next iteration,
-            // Because we initialized line and position with 1, 1
-            let line_updated: Line = line_updater(first_char, s.line.clone());
-            let position_updated: Position = s.position.increment();
-            let buffer_all_updated: Buffer = Buffer {
-                text: buffer_text_updated.text,
-                current_line: line_updated.clone(),
-                current_position: position_updated.clone(),
-                start_line: s.buffer.start_line.clone(),
-                start_position: s.buffer.start_position.clone(),
-            };
+    // generate token
+    let token: Option<RawToken> = token_generator::generate_token(
+        first_char,
+        rest_characters.clone(),
+        s.buffer.clone(),
+        s.line.clone(),
+    );
 
-            let s_ = match token {
-                Some(t) => {
-                    dbg!("[Scanner] Token generated: {:?}", t.clone());
-                    let tokens_updated: Vec<RawToken> =
-                        s.tokens.into_iter().chain(std::iter::once(t)).collect();
+    // update line and position
+    // this update is for next iteration,
+    // Because we initialized line and position with 1, 1
+    let line_updated: Line = line_updater::update(first_char, s.line.clone());
+    let position_updated: Position = s.position.increment();
+    let buffer_all_updated: Buffer = Buffer {
+        text: buffer_text_updated.text,
+        current_line: line_updated.clone(),
+        current_position: position_updated.clone(),
+        start_line: s.buffer.start_line.clone(),
+        start_position: s.buffer.start_position.clone(),
+    };
 
-                    Scanner {
-                        source: rest_characters,
-                        tokens: tokens_updated,
-                        buffer: Buffer::new(),
-                        line: line_updated,
-                        position: position_updated,
-                    }
-                }
-                None => Scanner {
-                    source: rest_characters,
-                    tokens: s.tokens,
-                    buffer: buffer_all_updated,
-                    line: line_updated,
-                    position: position_updated,
-                },
-            };
-            scan(s_)
+    let s_ = match token {
+        Some(t) => {
+            dbg!("[Scanner] Token generated: {:?}", t.clone());
+            let tokens_updated: Vec<RawToken> =
+                s.tokens.into_iter().chain(std::iter::once(t)).collect();
+
+            Scanner {
+                source: rest_characters,
+                tokens: tokens_updated,
+                buffer: Buffer::new(),
+                line: line_updated,
+                position: position_updated,
+            }
         }
-    }
-}
-
-fn line_updater(c: char, line: Line) -> Line {
-    match c {
-        '\n' => line.increment(),
-        _ => line,
-    }
-}
-
-fn buffer_text_updater(c: char, text: String) -> String {
-    match c {
-        '\0' | '\t' | '\r' | ' ' | '\n' => text,
-        _ => format!("{}{}", text, c),
-    }
+        None => Scanner {
+            source: rest_characters,
+            tokens: s.tokens,
+            buffer: buffer_all_updated,
+            line: line_updated,
+            position: position_updated,
+        },
+    };
+    scan(s_)
 }
