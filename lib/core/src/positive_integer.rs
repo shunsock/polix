@@ -1,3 +1,4 @@
+#[derive(Debug, PartialEq, Clone)]
 pub struct PositiveInteger32 {
     pub value: u32,
 }

@@ -1,14 +1,25 @@
 use crate::source_code::Line;
 use crate::source_code::Position;
 
-pub(super) struct Token {
+#[derive(Debug, PartialEq, Clone)]
+pub struct Token {
     pub token_type: TokenType,
     pub line: Line,
     pub position: Position,
 }
 
+impl Token {
+    pub fn new(token_type: TokenType, line: Line, position: Position) -> Token {
+        Token {
+            token_type,
+            line,
+            position,
+        }
+    }
+}
+
 #[derive(Debug, PartialEq, Clone)]
-pub(super) enum TokenType {
+pub enum TokenType {
     DelimiterAngleLeft,
     DelimiterAngleRight,
     DelimiterBraceLeft,
@@ -20,7 +31,7 @@ pub(super) enum TokenType {
     DoubleEqual,
     DoubleSlash,
     Eof,
-    Identifiers(String),
+    Identifier(String),
     KeywordAnd,
     KeywordAs,
     KeywordElse,
