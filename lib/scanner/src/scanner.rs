@@ -108,3 +108,142 @@ impl Scanner {
         s_.scan()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use core::source_code::Line;
+    use core::token::raw_token::RawTokenType;
+
+    /// Test: When the source string is empty,
+    /// the scan() method should return a Scanner with an empty source and no tokens.
+    #[test]
+    fn test_scan_empty_source() {
+        // Given: an empty source string.
+        let scanner = Scanner::new(String::new());
+
+        // When: we call scan() on the scanner.
+        let result = scanner.scan();
+
+        // Then: the returned Scanner should have an empty source and no tokens.
+        assert!(result.source.is_empty(), "Source should be empty after scanning.");
+        assert!(result.tokens.is_empty(), "No tokens should be produced for an empty source.");
+    }
+
+    /// Test: When the source contains a single token ending with a whitespace,
+    /// scan() should produce one token with the accumulated text.
+    #[test]
+    fn test_scan_single_token() {
+        // Given: a source string that ends with a whitespace to trigger token generation.
+        let input = "abc ";
+        let scanner = Scanner::new(input.to_string());
+
+        // When: we call scan().
+        let result = scanner.scan();
+
+        // Then: one token with the value "abc" should be produced.
+        assert!(result.source.is_empty(), "Source should be empty after scanning.");
+        assert_eq!(result.tokens.len(), 1, "Exactly one token should be generated.");
+
+        // 直接 tokens[0] は RawToken であるため Option として扱わず、token.token_type を確認する。
+        let token = &result.tokens[0];
+        match &token.token_type {
+            RawTokenType::Identifier(s) => {
+                assert_eq!(s, "abc", "The token value should be 'abc'.");
+            }
+            other => {
+                panic!("Unexpected token type: {:?}", other);
+            }
+        }
+
+        // Additionally, check that the line number remains 1.
+        assert_eq!(
+            result.line,
+            Line::new(1).unwrap(),
+            "The final line number should be 1."
+        );
+    }
+
+    /// Test: When the source contains multiple tokens separated by whitespace,
+    /// scan() should produce tokens accordingly.
+    #[test]
+    fn test_scan_multiple_tokens() {
+        // Given: a source string with two tokens separated by a space.
+        let input = "hello world ";
+        let scanner = Scanner::new(input.to_string());
+
+        // When: we call scan().
+        let result = scanner.scan();
+
+        // Then: two tokens should be produced: "hello" and "world".
+        assert!(result.source.is_empty(), "Source should be empty after scanning.");
+        assert_eq!(result.tokens.len(), 2, "Two tokens should be generated.");
+
+        // Check first token:
+        let token0 = &result.tokens[0];
+        match &token0.token_type {
+            RawTokenType::Identifier(s) => {
+                assert_eq!(s, "hello", "The first token should be 'hello'.");
+            }
+            other => {
+                panic!("Unexpected token type for first token: {:?}", other);
+            }
+        }
+
+        // Check second token:
+        let token1 = &result.tokens[1];
+        match &token1.token_type {
+            RawTokenType::Identifier(s) => {
+                assert_eq!(s, "world", "The second token should be 'world'.");
+            }
+            other => {
+                panic!("Unexpected token type for second token: {:?}", other);
+            }
+        }
+    }
+
+    /// Test: When the source contains newline characters,
+    /// scan() should update the line count and produce tokens per line.
+    #[test]
+    fn test_scan_with_newline() {
+        // Given: a source string with a newline character separating two tokens.
+        let input = "line1\nline2 ";
+        let scanner = Scanner::new(input.to_string());
+
+        // When: we call scan().
+        let result = scanner.scan();
+
+        // Then: two tokens should be produced: "line1" and "line2".
+        assert!(result.source.is_empty(), "Source should be empty after scanning.");
+        assert_eq!(result.tokens.len(), 2, "Two tokens should be generated when newline is present.");
+
+        // Check first token:
+        let token0 = &result.tokens[0];
+        match &token0.token_type {
+            RawTokenType::Identifier(s) => {
+                assert_eq!(s, "line1", "The first token should be 'line1'.");
+            }
+            other => {
+                panic!("Unexpected token type for first token with newline: {:?}", other);
+            }
+        }
+
+        // Check second token:
+        let token1 = &result.tokens[1];
+        match &token1.token_type {
+            RawTokenType::Identifier(s) => {
+                assert_eq!(s, "line2", "The second token should be 'line2'.");
+            }
+            other => {
+                panic!("Unexpected token type for second token with newline: {:?}", other);
+            }
+        }
+
+        // And: the line number should be updated (assuming the newline increments the line count).
+        assert_eq!(
+            result.line,
+            Line::new(2).unwrap(),
+            "The final line number should be 2 after scanning a newline."
+        );
+    }
+}
