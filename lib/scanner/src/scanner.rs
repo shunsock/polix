@@ -60,7 +60,7 @@ impl Scanner {
         let token: Option<RawToken> = token_generator::generate_token(
             first_char,
             rest_characters.clone(),
-            self.buffer.clone(),
+            buffer_text_updated.clone(),
             self.line,
         );
 
@@ -70,7 +70,7 @@ impl Scanner {
         let line_updated: Line = line_updater::update(first_char, self.line);
         let position_updated: Position = position_updater::update(first_char, self.position);
         let buffer_all_updated: Buffer = Buffer {
-            text: buffer_text_updated.text,
+            text: buffer_text_updated.text.clone(),
             current_line: line_updated,
             current_position: position_updated,
             start_line: self.buffer.start_line,
