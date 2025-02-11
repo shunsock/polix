@@ -13,7 +13,6 @@ impl RunInterpreterAtOnce {
     pub(crate) fn run(&self) {
         debug!("Running interpreter at once");
         debug!("Source code: {}", self.src.clone());
-        let s = Scanner::new(self.src.clone()).scan();
-        debug!("Scanned tokens: {:?}", s.tokens);
+        Scanner::new(self.src.clone()).scan();
     }
 }
