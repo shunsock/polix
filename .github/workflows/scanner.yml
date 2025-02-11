@@ -6,14 +6,13 @@ on:
       - "main"
       - "develop"
     paths:
-      - "lib/reporter/**"
+      - "lib/scanner/**"
   pull_request:
     branches:
       - "main"
       - "develop"
     paths:
-      - "lib/reporter/**"
-
+      - "lib/scanner/**"
 
 jobs:
   build:
@@ -27,13 +26,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Format
-        run: cargo fmt --all -- --check -p reporter
+        run: cargo fmt --all -- --check -p scanner
       - name: Build
-        run: cargo build --verbose -p reporter
+        run: cargo build --verbose -p scanner
       - name: Check
-        run: cargo check --verbose -p reporter
+        run: cargo check --verbose -p scanner
       - name: Clippy
-        run: cargo clippy --verbose -p reporter
+        run: cargo clippy --verbose -p scanner
       - name: Run tests
-        run: cargo test --verbose -p reporter
-
+        run: cargo test --verbose -p scanner
