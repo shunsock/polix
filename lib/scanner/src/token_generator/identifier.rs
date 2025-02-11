@@ -1,12 +1,12 @@
 use crate::buffer::Buffer;
-use core::token::token::{Token, TokenType};
+use core::token::raw_token::{RawToken, TokenType};
 
-pub(super) fn generate(rest: String, buffer: Buffer) -> Option<Token> {
+pub(super) fn generate(rest: String, buffer: Buffer) -> Option<RawToken> {
     let next_char: char = match rest.chars().next() {
         Some(next_char) => next_char,
         None => {
             let identifier: String = buffer.text;
-            return Some(Token::new(
+            return Some(RawToken::new(
                 TokenType::Identifier(identifier),
                 buffer.start_line,
                 buffer.start_position,
@@ -17,7 +17,7 @@ pub(super) fn generate(rest: String, buffer: Buffer) -> Option<Token> {
         true => buffer.text,
         false => return None,
     };
-    Some(Token::new(
+    Some(RawToken::new(
         TokenType::Identifier(identifier),
         buffer.start_line,
         buffer.start_position,
@@ -48,10 +48,10 @@ mod tests {
         let rest: String = " hello".to_string();
 
         // When: we call the generate function.
-        let result: Option<Token> = generate(rest, buffer);
+        let result: Option<RawToken> = generate(rest, buffer);
 
         // Then: a token should be produced with the identifier "id" = "id".
-        let expected_token = Token::new(
+        let expected_token = RawToken::new(
             TokenType::Identifier("id".to_string()),
             Line::new(1).unwrap(),
             Position::new(1).unwrap(),
@@ -68,7 +68,7 @@ mod tests {
         let rest: String = "non-whitespace".to_string();
 
         // When: we call the generate function.
-        let result: Option<Token> = generate(rest, buffer);
+        let result: Option<RawToken> = generate(rest, buffer);
 
         // Then: no token should be produced.
         assert_eq!(result, None);
@@ -83,10 +83,10 @@ mod tests {
         let rest: String = "".to_string();
 
         // When: we call the generate function.
-        let result: Option<Token> = generate(rest, buffer);
+        let result: Option<RawToken> = generate(rest, buffer);
 
         // Then: a token should be produced with the identifier "id".
-        let expected_token: Token = Token::new(
+        let expected_token: RawToken = RawToken::new(
             TokenType::Identifier("id".to_string()),
             Line::new(1).unwrap(),
             Position::new(1).unwrap(),

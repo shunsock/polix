@@ -1,12 +1,12 @@
 use crate::buffer::Buffer;
 use crate::token_generator;
 use core::source_code::{Line, Position};
-use core::token::token::Token;
+use core::token::raw_token::RawToken;
 
 #[derive(Clone, Debug)]
 pub struct Scanner {
     pub source: String,
-    pub tokens: Vec<Token>,
+    pub tokens: Vec<RawToken>,
     pub buffer: Buffer,
     pub line: Line,
     pub position: Position,
@@ -49,7 +49,7 @@ pub fn scan(s: Scanner) -> Scanner {
             };
 
             // generate token
-            let token: Option<Token> = token_generator::generate_token(
+            let token: Option<RawToken> = token_generator::generate_token(
                 first_char,
                 rest_characters.clone(),
                 s.buffer.clone(),
@@ -71,7 +71,7 @@ pub fn scan(s: Scanner) -> Scanner {
 
             let s_ = match token {
                 Some(t) => {
-                    let tokens_updated: Vec<Token> =
+                    let tokens_updated: Vec<RawToken> =
                         s.tokens.into_iter().chain(std::iter::once(t)).collect();
 
                     Scanner {
