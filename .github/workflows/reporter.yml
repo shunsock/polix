@@ -27,7 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Format
-        run: cargo fmt --all -- --check -p reporter
+        run: cargo fmt --all -- --check
       - name: Build
         run: cargo build --verbose -p reporter
       - name: Check
