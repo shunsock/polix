@@ -1,5 +1,5 @@
 use crate::buffer::Buffer;
-use core::token::raw_token::{RawToken, TokenType};
+use core::token::raw_token::{RawToken, RawTokenType};
 
 pub(super) fn generate(rest: String, buffer: Buffer) -> Option<RawToken> {
     let next_char: char = match rest.chars().next() {
@@ -7,7 +7,7 @@ pub(super) fn generate(rest: String, buffer: Buffer) -> Option<RawToken> {
         None => {
             let identifier: String = buffer.text;
             return Some(RawToken::new(
-                TokenType::Identifier(identifier),
+                RawTokenType::Identifier(identifier),
                 buffer.start_line,
                 buffer.start_position,
             ));
@@ -18,7 +18,7 @@ pub(super) fn generate(rest: String, buffer: Buffer) -> Option<RawToken> {
         false => return None,
     };
     Some(RawToken::new(
-        TokenType::Identifier(identifier),
+        RawTokenType::Identifier(identifier),
         buffer.start_line,
         buffer.start_position,
     ))
@@ -52,7 +52,7 @@ mod tests {
 
         // Then: a token should be produced with the identifier "id" = "id".
         let expected_token = RawToken::new(
-            TokenType::Identifier("id".to_string()),
+            RawTokenType::Identifier("id".to_string()),
             Line::new(1).unwrap(),
             Position::new(1).unwrap(),
         );
@@ -87,7 +87,7 @@ mod tests {
 
         // Then: a token should be produced with the identifier "id".
         let expected_token: RawToken = RawToken::new(
-            TokenType::Identifier("id".to_string()),
+            RawTokenType::Identifier("id".to_string()),
             Line::new(1).unwrap(),
             Position::new(1).unwrap(),
         );

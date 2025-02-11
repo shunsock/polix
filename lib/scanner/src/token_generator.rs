@@ -8,7 +8,12 @@ use core::token::raw_token::RawToken;
 ///
 /// - return None when c is whitespace
 /// - return Identifier token with buffer + c when c is alphabetic and rest starts with whitespace
-pub(crate) fn generate_token(c: char, rest: String, buffer: Buffer, line: Line) -> Option<RawToken> {
+pub(crate) fn generate_token(
+    c: char,
+    rest: String,
+    buffer: Buffer,
+    line: Line,
+) -> Option<RawToken> {
     match c {
         '\0' | '\t' | '\r' | ' ' => None,
         '\n' => {
