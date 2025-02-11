@@ -1,7 +1,7 @@
 use core::source_code::{Line, Position};
 
 #[derive(Clone, Debug)]
-pub(crate) struct Buffer {
+pub struct Buffer {
     pub(crate) text: String,
     pub(crate) current_line: Line,
     pub(crate) current_position: Position,
@@ -10,7 +10,7 @@ pub(crate) struct Buffer {
 }
 
 impl Buffer {
-    pub(crate) fn new() -> Buffer {
+    pub fn new() -> Buffer {
         Buffer {
             text: String::new(),
             current_line: Line::new(1).unwrap(),

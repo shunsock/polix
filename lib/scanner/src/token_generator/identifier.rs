@@ -1,6 +1,5 @@
 use crate::buffer::Buffer;
-use core::source_code::{Line, Position};
-use core::token::{Token, TokenType};
+use core::token::token::{Token, TokenType};
 
 pub(super) fn generate(rest: String, buffer: Buffer) -> Option<Token> {
     let next_char: char = match rest.chars().next() {
@@ -69,7 +68,7 @@ mod tests {
         let rest: String = "non-whitespace".to_string();
 
         // When: we call the generate function.
-        let result = generate(rest, buffer);
+        let result: Option<Token> = generate(rest, buffer);
 
         // Then: no token should be produced.
         assert_eq!(result, None);
@@ -81,13 +80,13 @@ mod tests {
     fn test_generate_with_empty_rest() {
         // Given: a non-empty buffer, and an empty `rest` string.
         let buffer: Buffer = create_buffer_has_text_id();
-        let rest = "".to_string();
+        let rest: String = "".to_string();
 
         // When: we call the generate function.
-        let result = generate(rest, buffer);
+        let result: Option<Token> = generate(rest, buffer);
 
         // Then: a token should be produced with the identifier "id".
-        let expected_token = Token::new(
+        let expected_token: Token = Token::new(
             TokenType::Identifier("id".to_string()),
             Line::new(1).unwrap(),
             Position::new(1).unwrap(),

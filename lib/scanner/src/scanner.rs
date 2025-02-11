@@ -1,7 +1,7 @@
 use crate::buffer::Buffer;
 use crate::token_generator;
 use core::source_code::{Line, Position};
-use core::token::Token;
+use core::token::token::Token;
 
 #[derive(Clone, Debug)]
 pub struct Scanner {
@@ -54,7 +54,6 @@ pub fn scan(s: Scanner) -> Scanner {
                 rest_characters.clone(),
                 s.buffer.clone(),
                 s.line.clone(),
-                s.position.clone(),
             );
 
             // update line and position
