@@ -19,8 +19,12 @@ pub(crate) fn generate_token(
         '\0' | '\t' | '\r' | ' ' => {
             None
         }
+        '\n' => {
+            line.increment();
+            None
+        }
         'a'..='z' | 'A'..='Z' | '_' => {
-            identifier::generate(c, rest, buffer, line, position)
+            identifier::generate(rest, buffer, line, position)
         }
         _ => None,
     }
