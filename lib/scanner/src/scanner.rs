@@ -41,7 +41,7 @@ pub fn scan(s: Scanner) -> Scanner {
             // concat buffer and first character
             // e.g. buffer = "ab", first_char = "c" -> buffer_updated = "abc"
             let buffer_text_updated: Buffer = Buffer {
-                text: format!("{}{}", s.buffer.text, first_char),
+                text: buffer_text_updater(first_char, s.buffer.text.clone()),
                 current_line: s.buffer.current_line.clone(),
                 current_position: s.buffer.current_position.clone(),
                 start_line: s.buffer.start_line.clone(),
@@ -71,6 +71,7 @@ pub fn scan(s: Scanner) -> Scanner {
 
             let s_ = match token {
                 Some(t) => {
+                    dbg!("[Scanner] Token generated: {:?}", t.clone());
                     let tokens_updated: Vec<RawToken> =
                         s.tokens.into_iter().chain(std::iter::once(t)).collect();
 
@@ -99,5 +100,12 @@ fn line_updater(c: char, line: Line) -> Line {
     match c {
         '\n' => line.increment(),
         _ => line,
+    }
+}
+
+fn buffer_text_updater(c: char, text: String) -> String {
+    match c {
+        '\0' | '\t' | '\r' | ' ' | '\n' => text,
+        _ => format!("{}{}", text, c),
     }
 }
