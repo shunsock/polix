@@ -2,15 +2,15 @@ use crate::source_code::Line;
 use crate::source_code::Position;
 
 #[derive(Debug, PartialEq, Clone)]
-pub struct TokenPrepared {
-    pub token_type: PreparedTokenType,
+pub struct TokenWithParsedIdentifier {
+    pub token_type: TokenWithParsedIdentifierType,
     pub line: Line,
     pub position: Position,
 }
 
-impl TokenPrepared {
-    pub fn new(token_type: PreparedTokenType, line: Line, position: Position) -> TokenPrepared {
-        TokenPrepared {
+impl TokenWithParsedIdentifier {
+    pub fn new(token_type: TokenWithParsedIdentifierType, line: Line, position: Position) -> TokenWithParsedIdentifier {
+        TokenWithParsedIdentifier {
             token_type,
             line,
             position,
@@ -19,7 +19,7 @@ impl TokenPrepared {
 }
 
 #[derive(Debug, PartialEq, Clone)]
-pub enum PreparedTokenType {
+pub enum TokenWithParsedIdentifierType {
     DelimiterAngleLeft,
     DelimiterAngleRight,
     DelimiterBraceLeft,
@@ -31,7 +31,6 @@ pub enum PreparedTokenType {
     DoubleEqual,
     DoubleSlash,
     Eof,
-    Identifier(String),
     KeywordAnd,
     KeywordAs,
     KeywordElse,
@@ -72,4 +71,5 @@ pub enum PreparedTokenType {
     SinglePercent,
     SinglePlus,
     SingleSlash,
+    Variable(String),
 }
