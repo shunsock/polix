@@ -58,7 +58,7 @@ pub enum TokenWithParsedIdentifierType {
     LiteralBoolean(bool),
     LiteralCharacter(char),
     LiteralFloat(f64),
-    LiteralInteger(i32),
+    LiteralInteger(i64),
     LiteralNone,
     LiteralString(String),
     SeparatorColon,
