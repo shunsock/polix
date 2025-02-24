@@ -30,7 +30,6 @@ pub enum RawTokenType {
     Colon,
     Comma,
     Dot,
-    Eof,
     Identifier(String),
     ParenthesisLeft,
     ParenthesisRight,
