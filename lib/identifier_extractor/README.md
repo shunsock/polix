@@ -1,8 +1,8 @@
-# Polix Transformer
+# Polix Identifier Extractor
 
 ## About
 
-The Polix Transformer is a module that takes the list of tokens from the scanner and transforms it for preparing the parser to parse the code.
+The Polix Identifier Extractor is a module that takes the list of tokens from the scanner and transforms it for preparing the parser to parse the code.
 
 ```
 let f: fn = (x: int): int { return x + 1; };
