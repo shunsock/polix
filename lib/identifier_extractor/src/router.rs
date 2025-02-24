@@ -17,10 +17,7 @@ pub fn route_identifier(
     l: Line,
     p: Position,
 ) -> Result<TokenWithParsedIdentifierType, IdentifierExtractorError> {
-    match search_keyword(s.clone()) {
-        Some(t) => return Ok(t),
-        None => (),
-    }
+    if let Some(t) = search_keyword(s.clone()) { return Ok(t) }
 
     match search_number(s.clone()) {
         true => {

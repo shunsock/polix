@@ -44,10 +44,10 @@ impl PolixErrorTrait for IdentifierExtractorError {
     }
 
     fn get_line(&self) -> Line {
-        self.line.clone()
+        self.line
     }
 
     fn get_position(&self) -> Position {
-        self.position.clone()
+        self.position
     }
 }
