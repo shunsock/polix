@@ -9,7 +9,11 @@ pub struct TokenWithParsedIdentifier {
 }
 
 impl TokenWithParsedIdentifier {
-    pub fn new(token_type: TokenWithParsedIdentifierType, line: Line, position: Position) -> TokenWithParsedIdentifier {
+    pub fn new(
+        token_type: TokenWithParsedIdentifierType,
+        line: Line,
+        position: Position,
+    ) -> TokenWithParsedIdentifier {
         TokenWithParsedIdentifier {
             token_type,
             line,
