@@ -13,24 +13,23 @@ pub fn route(token: RawToken) -> Result<TokenWithParsedIdentifierType, Identifie
 }
 
 pub fn route_identifier(
-    s: String,
-    l: Line,
-    p: Position,
+    str: String,
+    line: Line,
+    position: Position,
 ) -> Result<TokenWithParsedIdentifierType, IdentifierExtractorError> {
-    if let Some(t) = search_keyword(s.clone()) { return Ok(t) }
-
-    match search_number(s.clone()) {
-        true => {
-            return if s.contains('.') {
-                parse_float(s, l, p)
-            } else {
-                parse_integer(s, l, p)
-            }
-        }
-        false => (),
+    if let Some(t) = search_keyword(str.clone()) {
+        return Ok(t);
     }
 
-    parse_string(s, l, p)
+    match search_number(str.clone()) {
+        true => (),
+        false => return parse_string(str, line, position),
+    }
+
+    match str.contains('.') {
+        true => parse_float(str, line, position),
+        false => parse_integer(str, line, position),
+    }
 }
 
 fn route_others(token_type: RawTokenType) -> TokenWithParsedIdentifierType {
@@ -50,5 +49,36 @@ fn route_others(token_type: RawTokenType) -> TokenWithParsedIdentifierType {
         RawTokenType::Plus => TokenWithParsedIdentifierType::OperatorPlus,
         RawTokenType::Semicolon => TokenWithParsedIdentifierType::SeparatorSemicolon,
         _ => panic!("Invalid token type"),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    /// test route identifier number
+    /// test route identifier float
+    /// test route identifier string
+    /// test route identifier keyword
+
+    #[test]
+    /// test route others
+    fn test_route_others() {
+        // Arrange
+        let angle_left: RawToken = RawToken::new(
+            RawTokenType::AngleLeft,
+            Line::new(1).unwrap(),
+            Position::new(1).unwrap(),
+        );
+
+        // Act
+        let actual: Result<TokenWithParsedIdentifierType, IdentifierExtractorError> =
+            route(angle_left);
+
+        // Assert
+        assert!(actual.is_ok());
+        assert_eq!(
+            actual.unwrap(),
+            TokenWithParsedIdentifierType::DelimiterAngleLeft
+        );
     }
 }

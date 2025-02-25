@@ -2,12 +2,14 @@ use core::polix_error_trait::PolixErrorTrait;
 use core::source_code::Line;
 use core::source_code::Position;
 
+#[derive(Debug)]
 pub struct IdentifierExtractorError {
     pub error_kind: IdentifierExtractorErrorKind,
     pub line: Line,
     pub position: Position,
 }
 
+#[derive(Debug)]
 #[allow(clippy::enum_variant_names)]
 pub enum IdentifierExtractorErrorKind {
     InvalidFloatLiteralFound,
