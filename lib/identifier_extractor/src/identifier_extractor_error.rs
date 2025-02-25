@@ -8,6 +8,7 @@ pub struct IdentifierExtractorError {
     pub position: Position,
 }
 
+#[allow(clippy::enum_variant_names)]
 pub enum IdentifierExtractorErrorKind {
     InvalidFloatLiteralFound,
     InvalidIntegerLiteralFound,
