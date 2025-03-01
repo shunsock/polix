@@ -79,7 +79,6 @@ impl Scanner {
 
         let s_ = match token {
             Some(t) => {
-                dbg!("[Scanner] Token generated: {:?}", t.clone());
                 let tokens_updated: Vec<RawToken> =
                     self.tokens.into_iter().chain(std::iter::once(t)).collect();
 

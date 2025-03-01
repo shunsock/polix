@@ -26,7 +26,13 @@ impl Reporter {
     pub fn report(&self, line: Line, position: Position, message: &str) {
         let target_line_content: String = self.get_line_content(line);
         let caret: String = self.generate_caret(position);
-        eprintln!("{}: {}", target_line_content, message);
+        eprintln!(
+            "ERROR: position: {}, line: {}, {}",
+            position.number.value + 1,
+            line.number.value,
+            message
+        );
+        eprintln!("{}", target_line_content);
         eprintln!("{}", caret);
     }
 

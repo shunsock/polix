@@ -19,7 +19,7 @@ impl ExtractorDto {
     }
 }
 
-fn extract(dto: ExtractorDto) -> Result<ExtractorDto, IdentifierExtractorError> {
+pub fn extract(dto: ExtractorDto) -> Result<ExtractorDto, IdentifierExtractorError> {
     match dto.tokens_before_processed.split_first() {
         Some((first_token, rest_tokens)) => {
             let first_token_type: TokenWithParsedIdentifierType = route(first_token.clone())?;
