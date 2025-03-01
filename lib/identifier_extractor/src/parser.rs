@@ -32,13 +32,40 @@ pub(crate) fn parse_integer(
     }
 }
 
-pub(crate) fn parse_string(
+pub(crate) fn parse_string_literal(
+    s: String,
+    line: Line,
+    position: Position,
+) -> Result<TokenWithParsedIdentifierType, IdentifierExtractorError> {
+    let mut chars = s.chars();
+    let first_char = chars.next();
+    if first_char != Some('"') {
+        return Err(IdentifierExtractorError::new(
+            IdentifierExtractorErrorKind::InvalidStringLiteralFound,
+            line,
+            position,
+        ));
+    }
+    let last_char = chars.last();
+    if last_char != Some('"') {
+        return Err(IdentifierExtractorError::new(
+            IdentifierExtractorErrorKind::InvalidStringLiteralFound,
+            line,
+            position,
+        ));
+    }
+    // remove the first and last character
+    let s = s[1..s.len() - 1].to_string();
+    Ok(TokenWithParsedIdentifierType::LiteralString(s))
+}
+
+pub(crate) fn parse_variable(
     s: String,
     line: Line,
     position: Position,
 ) -> Result<TokenWithParsedIdentifierType, IdentifierExtractorError> {
     match s.chars().all(|c| c.is_alphanumeric() || c == '_') {
-        true => Ok(TokenWithParsedIdentifierType::LiteralString(s)),
+        true => Ok(TokenWithParsedIdentifierType::Variable(s)),
         false => Err(IdentifierExtractorError::new(
             IdentifierExtractorErrorKind::InvalidStringLiteralFound,
             line,

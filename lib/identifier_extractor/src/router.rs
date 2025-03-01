@@ -1,6 +1,6 @@
 use crate::identifier_extractor_error::IdentifierExtractorError;
-use crate::parser::{parse_float, parse_integer, parse_string};
-use crate::searcher::{search_keyword, search_number};
+use crate::parser::{parse_float, parse_integer, parse_string_literal, parse_variable};
+use crate::searcher::{search_keyword, search_number_literal, search_string_literal};
 use core::source_code::{Line, Position};
 use core::token::raw_token::{RawToken, RawTokenType};
 use core::token::token_with_parsed_identifier::TokenWithParsedIdentifierType;
@@ -21,15 +21,18 @@ pub fn route_identifier(
         return Ok(t);
     }
 
-    match search_number(str.clone()) {
-        true => (),
-        false => return parse_string(str, line, position),
+    if search_string_literal(str.clone()) {
+        return parse_string_literal(str, line, position);
     }
 
-    match str.contains('.') {
-        true => parse_float(str, line, position),
-        false => parse_integer(str, line, position),
+    if search_number_literal(str.clone()) {
+        return match str.contains('.') {
+            true => parse_float(str, line, position),
+            false => parse_integer(str, line, position),
+        };
     }
+
+    parse_variable(str, line, position)
 }
 
 fn route_others(token_type: RawTokenType) -> TokenWithParsedIdentifierType {
@@ -54,8 +57,8 @@ fn route_others(token_type: RawTokenType) -> TokenWithParsedIdentifierType {
 
 #[cfg(test)]
 mod tests {
-    use crate::identifier_extractor_error::IdentifierExtractorErrorKind;
     use super::*;
+    use crate::identifier_extractor_error::IdentifierExtractorErrorKind;
     #[test]
     /// test route identifier number
     fn test_route_identifier_number() {
@@ -77,6 +80,7 @@ mod tests {
             TokenWithParsedIdentifierType::LiteralInteger(123)
         );
     }
+
     #[test]
     /// test route identifier float
     fn test_route_identifier_float() {
@@ -98,9 +102,32 @@ mod tests {
             TokenWithParsedIdentifierType::LiteralFloat(123.45)
         );
     }
+
+    #[test]
+    /// test route literal string
+    fn test_route_identifier_integer() {
+        // Arrange
+        let raw_token: RawToken = RawToken::new(
+            RawTokenType::Identifier("\"abcABC_\"".to_string()),
+            Line::new(1).unwrap(),
+            Position::new(1).unwrap(),
+        );
+
+        // Act
+        let actual: Result<TokenWithParsedIdentifierType, IdentifierExtractorError> =
+            route(raw_token);
+
+        // Assert
+        assert!(actual.is_ok());
+        assert_eq!(
+            actual.unwrap(),
+            TokenWithParsedIdentifierType::LiteralString("abcABC_".to_string())
+        );
+    }
+
     #[test]
     /// test route identifier string
-    fn test_route_identifier_string() {
+    fn test_route_variable() {
         // Arrange
         let raw_token: RawToken = RawToken::new(
             RawTokenType::Identifier("abcABC_".to_string()),
@@ -116,7 +143,7 @@ mod tests {
         assert!(actual.is_ok());
         assert_eq!(
             actual.unwrap(),
-            TokenWithParsedIdentifierType::LiteralString("abcABC_".to_string())
+            TokenWithParsedIdentifierType::Variable("abcABC_".to_string())
         );
     }
 

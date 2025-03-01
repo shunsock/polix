@@ -33,8 +33,23 @@ pub(crate) fn search_keyword(s: String) -> Option<TokenWithParsedIdentifierType>
     }
 }
 
-pub(crate) fn search_number(s: String) -> bool {
-    s.chars()
-        .next()
-        .map_or(false, |c| c.is_ascii_digit())
+pub(crate) fn search_number_literal(s: String) -> bool {
+    s.chars().next().map_or(false, |c| c.is_ascii_digit())
+}
+
+pub(crate) fn search_string_literal(s: String) -> bool {
+    // read the first character
+    let mut chars = s.chars();
+    let first_char = chars.next();
+    // check if the first character is a double quote
+    if first_char != Some('"') {
+        return false;
+    }
+    // check if the last character is a double quote
+    let last_char = chars.last();
+    if last_char != Some('"') {
+        return false;
+    }
+
+    true
 }
