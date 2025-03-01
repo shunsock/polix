@@ -35,5 +35,6 @@ pub(crate) fn search_keyword(s: String) -> Option<TokenWithParsedIdentifierType>
 
 pub(crate) fn search_number(s: String) -> bool {
     s.chars()
-        .all(|c| c.is_ascii_digit() || c == '.' || c == '-')
+        .next()
+        .map_or(false, |c| c.is_ascii_digit())
 }

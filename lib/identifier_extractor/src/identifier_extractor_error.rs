@@ -9,7 +9,7 @@ pub struct IdentifierExtractorError {
     pub position: Position,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 #[allow(clippy::enum_variant_names)]
 pub enum IdentifierExtractorErrorKind {
     InvalidFloatLiteralFound,
