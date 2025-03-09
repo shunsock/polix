@@ -28,8 +28,8 @@ impl Reporter {
         let caret: String = self.generate_caret(position);
         eprintln!(
             "ERROR: position: {}, line: {}, {}",
-            position.number.value + 1,
-            line.number.value,
+            position.number.get() + 1,
+            line.number.get(),
             message
         );
         eprintln!("{}", target_line_content);
@@ -37,18 +37,18 @@ impl Reporter {
     }
 
     fn get_line_content(&self, line: Line) -> String {
-        match self.source_code_lines.get((line.number.value - 1) as usize) {
+        match self.source_code_lines.get((line.number.get() - 1) as usize) {
             Some(content) => content.to_string(),
             None => panic!(
                 "[Fetal] Line number is out of range. Expected: 0..{}, Found: {}. Please report this issue to the developers.",
                 self.source_code_lines.len(),
-                line.number.value,
+                line.number.get(),
             ),
         }
     }
 
     fn generate_caret(&self, position: Position) -> String {
-        let position: u32 = position.number.value;
+        let position: u32 = position.number.get();
         let mut caret: String = String::new();
         for _ in 0..position {
             caret.push(' ');

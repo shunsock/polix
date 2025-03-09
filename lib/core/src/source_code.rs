@@ -1,35 +1,50 @@
-use crate::positive_integer::{PositiveIntCreationError, PositiveInteger32};
+use std::num::NonZero;
+
+#[derive(Debug, PartialEq, Clone)]
+pub struct PositiveIntCreationError {
+    message: String,
+}
+
+impl PositiveIntCreationError {
+    fn new() -> Self {
+        Self {
+            message: "Value must be greater than 0".to_string(),
+        }
+    }
+}
 
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Line {
-    pub number: PositiveInteger32,
+    pub number: NonZero<u32>,
 }
 
 impl Line {
     pub fn new(number: u32) -> Result<Self, PositiveIntCreationError> {
-        Ok(Self {
-            number: PositiveInteger32::new(number)?,
-        })
+        match NonZero::new(number) {
+            None => Err(PositiveIntCreationError::new()),
+            Some(n) => Ok(Self { number: n }),
+        }
     }
 
     pub fn increment(&self) -> Line {
-        Line::new(self.number.value + 1).unwrap()
+        Line::new(self.number.get() + 1).unwrap()
     }
 }
 
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Position {
-    pub number: PositiveInteger32,
+    pub number: NonZero<u32>,
 }
 
 impl Position {
     pub fn new(number: u32) -> Result<Self, PositiveIntCreationError> {
-        Ok(Self {
-            number: PositiveInteger32::new(number)?,
-        })
+        match NonZero::new(number) {
+            None => Err(PositiveIntCreationError::new()),
+            Some(n) => Ok(Self { number: n }),
+        }
     }
 
     pub fn increment(&self) -> Position {
-        Position::new(self.number.value + 1).unwrap()
+        Position::new(self.number.get() + 1).unwrap()
     }
 }
