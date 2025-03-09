@@ -22,11 +22,7 @@ impl Line {
     pub fn new(number: u32) -> Result<Self, PositiveIntCreationError> {
         match NonZero::new(number) {
             None => Err(PositiveIntCreationError::new()),
-            Some(n) => {
-                Ok(Self {
-                    number: n,
-                })
-            }
+            Some(n) => Ok(Self { number: n }),
         }
     }
 
@@ -44,11 +40,7 @@ impl Position {
     pub fn new(number: u32) -> Result<Self, PositiveIntCreationError> {
         match NonZero::new(number) {
             None => Err(PositiveIntCreationError::new()),
-            Some(n) => {
-                Ok(Self {
-                    number: n,
-                })
-            }
+            Some(n) => Ok(Self { number: n }),
         }
     }
 
