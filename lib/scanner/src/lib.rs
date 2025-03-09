@@ -1,7 +1,7 @@
-mod stream_creator;
+mod source_stream_generator;
 
 use log::debug;
-use stream_creator::SourceStreamGenerator;
+use source_stream_generator::SourceStreamGenerator;
 
 pub struct Scanner {
     source_code: Vec<char>,
