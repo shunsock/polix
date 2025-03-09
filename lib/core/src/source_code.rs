@@ -48,3 +48,9 @@ impl Position {
         Position::new(self.number.get() + 1).unwrap()
     }
 }
+
+pub struct SourceCodeCharacter {
+    pub character: char,
+    pub line: Line,
+    pub position: Position,
+}
