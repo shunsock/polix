@@ -1,5 +1,5 @@
 [workspace]
 resolver = "1"
 members = [
-    "app/polix", "lib/core", "lib/reporter",
+    "app/polix", "lib/core", "lib/reporter", "lib/scanner",
 ]
