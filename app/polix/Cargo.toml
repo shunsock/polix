@@ -16,7 +16,5 @@ clap = { version = "4.5.28", features = ["derive"] }
 env_logger = "0.11.6"
 log = "0.4.25"
 core = { path = "../../lib/core" }
-scanner = { path = "../../lib/scanner" }
 reporter = { path = "../../lib/reporter" }
-identifier_extractor = { path = "../../lib/identifier_extractor" }
 
