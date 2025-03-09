@@ -1,6 +1,6 @@
-use core::source_code::SourceCodeCharacter;
 use core::source_code::Line;
 use core::source_code::Position;
+use core::source_code::SourceCodeCharacter;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct SourceStreamGenerator {
@@ -15,33 +15,27 @@ impl SourceStreamGenerator {
         rest_source_code: Vec<char>,
         processed: Vec<SourceCodeCharacter>,
         index: Option<u32>,
-        position: Option<u32>
+        position: Option<u32>,
     ) -> SourceStreamGenerator {
         match (index, position) {
-            (Some(l), Some(p)) => {
-                SourceStreamGenerator {
-                    rest_source_code,
-                    processed,
-                    line: l,
-                    position: p,
-                }
-            }
-            _ => {
-                SourceStreamGenerator {
-                    rest_source_code,
-                    processed,
-                    line: 1,
-                    position: 1,
-                }
-            }
+            (Some(l), Some(p)) => SourceStreamGenerator {
+                rest_source_code,
+                processed,
+                line: l,
+                position: p,
+            },
+            _ => SourceStreamGenerator {
+                rest_source_code,
+                processed,
+                line: 1,
+                position: 1,
+            },
         }
     }
 
     pub fn generate(&self) -> Self {
         match self.rest_source_code.len() {
-            0 => {
-                self.clone()
-            }
+            0 => self.clone(),
             _ => {
                 // Get the first character from the source code
                 // This unwrap is ok, because we are sure that the vec is not empty
@@ -67,7 +61,8 @@ impl SourceStreamGenerator {
                         processed,
                         Some(self.line + 1),
                         Some(1),
-                    ).generate();
+                    )
+                    .generate();
                 }
 
                 // create a new StreamCreator with the rest of the source code
@@ -76,9 +71,14 @@ impl SourceStreamGenerator {
                     processed,
                     Some(self.line),
                     Some(self.position + 1),
-                ).generate()
+                )
+                .generate()
             }
         }
+    }
+
+    pub fn get_processed(&self) -> Vec<SourceCodeCharacter> {
+        self.processed.clone()
     }
 }
 
