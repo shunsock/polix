@@ -49,8 +49,19 @@ impl Position {
     }
 }
 
+#[derive(Debug, PartialEq, Clone)]
 pub struct SourceCodeCharacter {
     pub character: char,
     pub line: Line,
     pub position: Position,
+}
+
+impl SourceCodeCharacter {
+    pub fn new(character: char, line: Line, position: Position) -> Self {
+        Self {
+            character,
+            line,
+            position,
+        }
+    }
 }
