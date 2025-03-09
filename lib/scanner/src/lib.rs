@@ -1,5 +1,6 @@
 mod stream_creator;
 
+use log::debug;
 use stream_creator::SourceStreamGenerator;
 
 pub struct Scanner {
@@ -14,9 +15,8 @@ impl Scanner {
     }
 
     pub fn scan(&self) {
-        let stream_creator =
-            SourceStreamGenerator::new(self.source_code.clone(), vec![], None, None);
-        let stream_creator: SourceStreamGenerator = stream_creator.generate();
-        println!("{:?}", stream_creator.get_processed());
+        let stream_generator =
+            SourceStreamGenerator::new(self.source_code.clone(), vec![], None, None).generate();
+        debug!("{:?}", stream_generator.get_processed());
     }
 }

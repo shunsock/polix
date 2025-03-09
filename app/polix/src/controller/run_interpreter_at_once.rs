@@ -1,4 +1,5 @@
 use log::debug;
+use scanner::Scanner;
 
 pub(crate) struct RunInterpreterAtOnce {
     src: String,
@@ -12,5 +13,8 @@ impl RunInterpreterAtOnce {
     pub(crate) fn run(&self) {
         debug!("Running interpreter at once");
         debug!("Source code: {}", self.src.clone());
+        let scanner = Scanner::new(self.src.clone());
+        scanner.scan();
+        debug!("Source code scanner finished");
     }
 }
