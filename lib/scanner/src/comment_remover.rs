@@ -1,5 +1,3 @@
-use core::source_code::Line;
-use core::source_code::Position;
 use core::source_code::SourceCodeCharacter;
 
 #[derive(Debug, PartialEq, Clone)]
@@ -71,11 +69,17 @@ impl CommentRemover {
             }
         }
     }
+
+    pub fn get_processed(&self) -> Vec<SourceCodeCharacter> {
+        self.processed.clone()
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use core::source_code::Line;
+    use core::source_code::Position;
 
     /// Creates a vector of SourceCodeCharacter from a string
     /// Each character will have a Line number of 1 and sequential Position numbers
