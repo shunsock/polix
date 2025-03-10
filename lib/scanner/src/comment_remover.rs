@@ -25,41 +25,52 @@ impl CommentRemover {
     }
 
     pub fn remove(&mut self, reading_comment: bool) -> CommentRemover {
-        match self.source.len() <= 1 {
-            true => {
-                if reading_comment {
-                    return CommentRemover::new(vec![], self.processed.clone());
-                }
+        match self.source.len() {
+            0 => {
                 CommentRemover::new(vec![], self.processed.clone())
-            }
-            false => {
+            },
+            1 => {
+                let mut processed = self.processed.clone();
+
+                // If we're not in a comment, include the last character
+                if !reading_comment {
+                    processed.push(self.source[0].clone());
+                }
+
+                CommentRemover::new(vec![], processed)
+            },
+            _ => {
                 let mut source: Vec<SourceCodeCharacter> = self.source.clone();
                 let mut processed: Vec<SourceCodeCharacter> = self.processed.clone();
+
+                if reading_comment {
+                    let first_char: SourceCodeCharacter = source.remove(0);
+
+                    // newline is the end of the comment
+                    if first_char.character == '\n' {
+                        processed.push(first_char.clone());
+                        return CommentRemover::new(source, processed).remove(false);
+                    }
+
+                    // skip the first character
+                    return CommentRemover::new(source, processed).remove(true);
+                }
+
+                // Not in comment mode - check if this could be a comment start
+                if source[0].character == '/' && source.len() >= 2 && source[1].character == '/' {
+                    // Found a comment start - remove both slashes
+                    source.remove(0); // Remove first slash
+                    source.remove(0); // Remove second slash
+
+                    // Enter comment mode without adding slashes to processed
+                    return CommentRemover::new(source, processed).remove(true);
+                }
+
+                // Not a comment or comment start - add the first character to processed
                 let first_char: SourceCodeCharacter = source.remove(0);
+                processed.push(first_char);
 
-                // ignore the first character if it is not a newline character (end of the comment)
-                if reading_comment && first_char.character != '\n' {
-                    return CommentRemover::new(source, processed).remove(true);
-                };
-
-                processed.push(first_char.clone());
-
-                // newline is the end of the comment
-                if reading_comment && first_char.character == '\n' {
-                    return CommentRemover::new(source, processed).remove(false);
-                };
-
-                // processing the second character
-                let second_char: SourceCodeCharacter = source.remove(0);
-                processed.push(second_char.clone());
-
-                // if the first character is a slash, check if the next character is a slash
-                let is_comment_out: bool =
-                    first_char.character == '/' && second_char.character == '/';
-                if is_comment_out {
-                    return CommentRemover::new(source, processed).remove(true);
-                };
-
+                // Continue processing
                 CommentRemover::new(source, processed).remove(false)
             }
         }
@@ -102,6 +113,24 @@ mod tests {
 
         // Assert
         let expected = create_source_code_char_factory(source_text);
+        assert_eq!(remover.processed, expected);
+    }
+
+    #[test]
+    /// # Test remover pass without comment
+    ///
+    /// The source code is: rebind x: int = 0; // this is a comment
+    /// expected: rebind x: int = 0;
+    fn test_remover_pass_with_comment() {
+        // Arrange
+        let source_text = String::from("rebind x: int = 0; // this is a comment");
+        let source_code = create_source_code_char_factory(source_text.clone());
+
+        // Act
+        let remover = CommentRemover::new(source_code, vec![]).remove(false);
+
+        // Assert
+        let expected = create_source_code_char_factory("rebind x: int = 0; ".to_string());
         assert_eq!(remover.processed, expected);
     }
 }
