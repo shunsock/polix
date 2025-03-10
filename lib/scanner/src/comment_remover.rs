@@ -3,11 +3,12 @@ use core::source_code::Position;
 use core::source_code::SourceCodeCharacter;
 
 #[derive(Debug, PartialEq, Clone)]
-/// A struct that removes comments from the source code
+/// # A struct that removes comments from the source code
 ///
-/// Example:
-/// before: rebind x: int = 0; // this is a comment
-/// after:  rebind x: int = 0;
+/// ## Example:
+/// before: "rebind x: int = 0; // this is a comment"
+///
+/// after:  "rebind x: int = 0; "
 pub struct CommentRemover {
     source: Vec<SourceCodeCharacter>,
     processed: Vec<SourceCodeCharacter>,
@@ -18,17 +19,12 @@ impl CommentRemover {
         source: Vec<SourceCodeCharacter>,
         processed: Vec<SourceCodeCharacter>,
     ) -> CommentRemover {
-        CommentRemover {
-            source,
-            processed,
-        }
+        CommentRemover { source, processed }
     }
 
     pub fn remove(&mut self, reading_comment: bool) -> CommentRemover {
         match self.source.len() {
-            0 => {
-                CommentRemover::new(vec![], self.processed.clone())
-            },
+            0 => CommentRemover::new(vec![], self.processed.clone()),
             1 => {
                 let mut processed = self.processed.clone();
 
@@ -38,7 +34,7 @@ impl CommentRemover {
                 }
 
                 CommentRemover::new(vec![], processed)
-            },
+            }
             _ => {
                 let mut source: Vec<SourceCodeCharacter> = self.source.clone();
                 let mut processed: Vec<SourceCodeCharacter> = self.processed.clone();
@@ -91,7 +87,7 @@ mod tests {
             result.push(SourceCodeCharacter::new(
                 ch,
                 Line::new(1).unwrap(),
-                Position::new(position as u32).unwrap()
+                Position::new(position as u32).unwrap(),
             ));
         }
 
@@ -101,36 +97,73 @@ mod tests {
     #[test]
     /// # Test remover pass without comment
     ///
-    /// The source code is: rebind x: int = 0;
-    /// expected: rebind x: int = 0;
+    /// ## Test Case:
+    /// - input source code is: rebind x: int = 0;
+    /// - expected: rebind x: int = 0;
     fn test_remover_pass_without_comment() {
         // Arrange
         let source_text = String::from("rebind x: int = 0;");
-        let source_code = create_source_code_char_factory(source_text.clone());
+        let source_code: Vec<SourceCodeCharacter> =
+            create_source_code_char_factory(source_text.clone());
 
         // Act
         let remover = CommentRemover::new(source_code, vec![]).remove(false);
 
         // Assert
-        let expected = create_source_code_char_factory(source_text);
+        let expected: Vec<SourceCodeCharacter> = create_source_code_char_factory(source_text);
         assert_eq!(remover.processed, expected);
     }
 
     #[test]
-    /// # Test remover pass without comment
+    /// # Test remover pass with comment
     ///
-    /// The source code is: rebind x: int = 0; // this is a comment
-    /// expected: rebind x: int = 0;
+    /// ## Test Case:
+    /// - input source code is: "rebind x: int = 0; // this is a comment"
+    /// - expected: "rebind x: int = 0; "
     fn test_remover_pass_with_comment() {
         // Arrange
         let source_text = String::from("rebind x: int = 0; // this is a comment");
-        let source_code = create_source_code_char_factory(source_text.clone());
+        let source_code: Vec<SourceCodeCharacter> =
+            create_source_code_char_factory(source_text.clone());
 
         // Act
         let remover = CommentRemover::new(source_code, vec![]).remove(false);
 
         // Assert
-        let expected = create_source_code_char_factory("rebind x: int = 0; ".to_string());
+        let expected: Vec<SourceCodeCharacter> =
+            create_source_code_char_factory("rebind x: int = 0; ".to_string());
         assert_eq!(remover.processed, expected);
+    }
+
+    #[test]
+    /// # Test remover pass multiple comments
+    ///
+    /// ## Test Case:
+    /// - input source code is: "rebind x: int = 0; // this is a comment \n 1; // another comment"
+    /// - expected: "rebind x: int = 0; \n 1 "
+    fn test_remover_pass_with_comment_and_newline() {
+        // Arrange
+        let source_text =
+            String::from("rebind x: int = 0; // this is a comment \n 1; // another comment");
+        let source_code: Vec<SourceCodeCharacter> = create_source_code_char_factory(source_text);
+
+        // Act
+        let remover = CommentRemover::new(source_code, vec![]).remove(false);
+
+        // Assert
+        // We need to compare the characters ignoring position, since positions are different after comment removal
+        let expected: Vec<SourceCodeCharacter> =
+            create_source_code_char_factory("rebind x: int = 0; \n 1; ".to_string());
+        assert_eq!(
+            remover
+                .processed
+                .iter()
+                .map(|c| (c.character, c.line.number))
+                .collect::<Vec<_>>(),
+            expected
+                .iter()
+                .map(|c| (c.character, c.line.number))
+                .collect::<Vec<_>>()
+        );
     }
 }
