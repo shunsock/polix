@@ -70,6 +70,23 @@ impl CommentRemover {
 mod tests {
     use super::*;
 
+    /// Creates a vector of SourceCodeCharacter from a string
+    /// Each character will have a Line number of 1 and sequential Position numbers
+    fn create_source_code_char_factory(text: String) -> Vec<SourceCodeCharacter> {
+        let mut result = Vec::with_capacity(text.len());
+
+        for (i, ch) in text.chars().enumerate() {
+            let position = i + 1; // Position is 1-indexed
+            result.push(SourceCodeCharacter::new(
+                ch,
+                Line::new(1).unwrap(),
+                Position::new(position as u32).unwrap()
+            ));
+        }
+
+        result
+    }
+
     #[test]
     /// # Test remover pass without comment
     ///
@@ -77,52 +94,14 @@ mod tests {
     /// expected: rebind x: int = 0;
     fn test_remover_pass_without_comment() {
         // Arrange
-        let source_code: Vec<SourceCodeCharacter> = vec![
-            SourceCodeCharacter::new('r', Line::new(1).unwrap(), Position::new(1).unwrap()),
-            SourceCodeCharacter::new('e', Line::new(1).unwrap(), Position::new(2).unwrap()),
-            SourceCodeCharacter::new('b', Line::new(1).unwrap(), Position::new(3).unwrap()),
-            SourceCodeCharacter::new('i', Line::new(1).unwrap(), Position::new(4).unwrap()),
-            SourceCodeCharacter::new('n', Line::new(1).unwrap(), Position::new(5).unwrap()),
-            SourceCodeCharacter::new('d', Line::new(1).unwrap(), Position::new(6).unwrap()),
-            SourceCodeCharacter::new(' ', Line::new(1).unwrap(), Position::new(7).unwrap()),
-            SourceCodeCharacter::new('x', Line::new(1).unwrap(), Position::new(8).unwrap()),
-            SourceCodeCharacter::new(':', Line::new(1).unwrap(), Position::new(9).unwrap()),
-            SourceCodeCharacter::new(' ', Line::new(1).unwrap(), Position::new(10).unwrap()),
-            SourceCodeCharacter::new('i', Line::new(1).unwrap(), Position::new(11).unwrap()),
-            SourceCodeCharacter::new('n', Line::new(1).unwrap(), Position::new(12).unwrap()),
-            SourceCodeCharacter::new('t', Line::new(1).unwrap(), Position::new(13).unwrap()),
-            SourceCodeCharacter::new(' ', Line::new(1).unwrap(), Position::new(14).unwrap()),
-            SourceCodeCharacter::new('=', Line::new(1).unwrap(), Position::new(15).unwrap()),
-            SourceCodeCharacter::new(' ', Line::new(1).unwrap(), Position::new(16).unwrap()),
-            SourceCodeCharacter::new('0', Line::new(1).unwrap(), Position::new(17).unwrap()),
-            SourceCodeCharacter::new(';', Line::new(1).unwrap(), Position::new(18).unwrap()),
-        ];
+        let source_text = String::from("rebind x: int = 0;");
+        let source_code = create_source_code_char_factory(source_text.clone());
 
         // Act
         let remover = CommentRemover::new(source_code, vec![]).remove(false);
 
         // Assert
-        let expected: Vec<SourceCodeCharacter> = vec![
-            SourceCodeCharacter::new('r', Line::new(1).unwrap(), Position::new(1).unwrap()),
-            SourceCodeCharacter::new('e', Line::new(1).unwrap(), Position::new(2).unwrap()),
-            SourceCodeCharacter::new('b', Line::new(1).unwrap(), Position::new(3).unwrap()),
-            SourceCodeCharacter::new('i', Line::new(1).unwrap(), Position::new(4).unwrap()),
-            SourceCodeCharacter::new('n', Line::new(1).unwrap(), Position::new(5).unwrap()),
-            SourceCodeCharacter::new('d', Line::new(1).unwrap(), Position::new(6).unwrap()),
-            SourceCodeCharacter::new(' ', Line::new(1).unwrap(), Position::new(7).unwrap()),
-            SourceCodeCharacter::new('x', Line::new(1).unwrap(), Position::new(8).unwrap()),
-            SourceCodeCharacter::new(':', Line::new(1).unwrap(), Position::new(9).unwrap()),
-            SourceCodeCharacter::new(' ', Line::new(1).unwrap(), Position::new(10).unwrap()),
-            SourceCodeCharacter::new('i', Line::new(1).unwrap(), Position::new(11).unwrap()),
-            SourceCodeCharacter::new('n', Line::new(1).unwrap(), Position::new(12).unwrap()),
-            SourceCodeCharacter::new('t', Line::new(1).unwrap(), Position::new(13).unwrap()),
-            SourceCodeCharacter::new(' ', Line::new(1).unwrap(), Position::new(14).unwrap()),
-            SourceCodeCharacter::new('=', Line::new(1).unwrap(), Position::new(15).unwrap()),
-            SourceCodeCharacter::new(' ', Line::new(1).unwrap(), Position::new(16).unwrap()),
-            SourceCodeCharacter::new('0', Line::new(1).unwrap(), Position::new(17).unwrap()),
-            SourceCodeCharacter::new(';', Line::new(1).unwrap(), Position::new(18).unwrap()),
-        ];
-
+        let expected = create_source_code_char_factory(source_text);
         assert_eq!(remover.processed, expected);
     }
 }
