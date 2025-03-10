@@ -1,5 +1,6 @@
+use core::source_code::Line;
+use core::source_code::Position;
 use core::source_code::SourceCodeCharacter;
-
 
 #[derive(Debug, PartialEq, Clone)]
 /// A struct that removes comments from the source code
@@ -13,9 +14,18 @@ pub struct CommentRemover {
 }
 
 impl CommentRemover {
-    pub fn new(source: Vec<SourceCodeCharacter>, processed: Vec<SourceCodeCharacter>) -> CommentRemover {
+    pub fn new(
+        source: Vec<SourceCodeCharacter>,
+        processed: Vec<SourceCodeCharacter>,
+    ) -> CommentRemover {
+        let newline =
+            SourceCodeCharacter::new('\n', Line::new(1).unwrap(), Position::new(1).unwrap());
+        let mut v: Vec<SourceCodeCharacter> = source.clone();
+        v.push(newline.clone());
+        v.push(newline);
+
         CommentRemover {
-            source,
+            source: v,
             processed,
         }
     }
@@ -26,30 +36,31 @@ impl CommentRemover {
                 let mut processed: Vec<SourceCodeCharacter> = self.processed.clone();
                 processed.push(self.source.pop().unwrap());
                 CommentRemover::new(vec![], processed)
-            },
+            }
             false => {
-                let mut source = self.source.clone();
-                let first_char = source.remove(0);
-                let second_char = source.remove(0);
-
-                // processing the first character
+                let mut source: Vec<SourceCodeCharacter> = self.source.clone();
                 let mut processed: Vec<SourceCodeCharacter> = self.processed.clone();
-                processed.push(first_char.clone());
+                let first_char: SourceCodeCharacter = source.remove(0);
 
-                // if reading a comment and the first character is not newline, continue
-                if reading_comment && first_char.character != '\n'  {
+                // ignore the first character if it is not a newline character (end of the comment)
+                if reading_comment && first_char.character != '\n' {
                     return CommentRemover::new(source, processed).remove(true);
                 };
-                // if reading a comment and the first character is newline, stop reading the comment
-                if reading_comment && first_char.character == '\n'  {
+
+                processed.push(first_char.clone());
+
+                // newline is the end of the comment
+                if reading_comment && first_char.character == '\n' {
                     return CommentRemover::new(source, processed).remove(false);
                 };
 
                 // processing the second character
+                let second_char: SourceCodeCharacter = source.remove(0);
                 processed.push(second_char.clone());
 
                 // if the first character is a slash, check if the next character is a slash
-                let is_comment_out = first_char.character == '/' && second_char.character == '/';
+                let is_comment_out: bool =
+                    first_char.character == '/' && second_char.character == '/';
                 if is_comment_out {
                     return CommentRemover::new(source, processed).remove(true);
                 };

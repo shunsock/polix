@@ -1,5 +1,5 @@
-mod source_stream_generator;
 mod comment_remover;
+mod source_stream_generator;
 
 use log::debug;
 use source_stream_generator::SourceStreamGenerator;
