@@ -18,24 +18,19 @@ impl CommentRemover {
         source: Vec<SourceCodeCharacter>,
         processed: Vec<SourceCodeCharacter>,
     ) -> CommentRemover {
-        let newline =
-            SourceCodeCharacter::new('\n', Line::new(1).unwrap(), Position::new(1).unwrap());
-        let mut v: Vec<SourceCodeCharacter> = source.clone();
-        v.push(newline.clone());
-        v.push(newline);
-
         CommentRemover {
-            source: v,
+            source,
             processed,
         }
     }
 
     pub fn remove(&mut self, reading_comment: bool) -> CommentRemover {
-        match self.source.len() == 1 {
+        match self.source.len() <= 1 {
             true => {
-                let mut processed: Vec<SourceCodeCharacter> = self.processed.clone();
-                processed.push(self.source.pop().unwrap());
-                CommentRemover::new(vec![], processed)
+                if reading_comment {
+                    return CommentRemover::new(vec![], self.processed.clone());
+                }
+                CommentRemover::new(vec![], self.processed.clone())
             }
             false => {
                 let mut source: Vec<SourceCodeCharacter> = self.source.clone();
@@ -68,5 +63,66 @@ impl CommentRemover {
                 CommentRemover::new(source, processed).remove(false)
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    /// # Test remover pass without comment
+    ///
+    /// The source code is: rebind x: int = 0;
+    /// expected: rebind x: int = 0;
+    fn test_remover_pass_without_comment() {
+        // Arrange
+        let source_code: Vec<SourceCodeCharacter> = vec![
+            SourceCodeCharacter::new('r', Line::new(1).unwrap(), Position::new(1).unwrap()),
+            SourceCodeCharacter::new('e', Line::new(1).unwrap(), Position::new(2).unwrap()),
+            SourceCodeCharacter::new('b', Line::new(1).unwrap(), Position::new(3).unwrap()),
+            SourceCodeCharacter::new('i', Line::new(1).unwrap(), Position::new(4).unwrap()),
+            SourceCodeCharacter::new('n', Line::new(1).unwrap(), Position::new(5).unwrap()),
+            SourceCodeCharacter::new('d', Line::new(1).unwrap(), Position::new(6).unwrap()),
+            SourceCodeCharacter::new(' ', Line::new(1).unwrap(), Position::new(7).unwrap()),
+            SourceCodeCharacter::new('x', Line::new(1).unwrap(), Position::new(8).unwrap()),
+            SourceCodeCharacter::new(':', Line::new(1).unwrap(), Position::new(9).unwrap()),
+            SourceCodeCharacter::new(' ', Line::new(1).unwrap(), Position::new(10).unwrap()),
+            SourceCodeCharacter::new('i', Line::new(1).unwrap(), Position::new(11).unwrap()),
+            SourceCodeCharacter::new('n', Line::new(1).unwrap(), Position::new(12).unwrap()),
+            SourceCodeCharacter::new('t', Line::new(1).unwrap(), Position::new(13).unwrap()),
+            SourceCodeCharacter::new(' ', Line::new(1).unwrap(), Position::new(14).unwrap()),
+            SourceCodeCharacter::new('=', Line::new(1).unwrap(), Position::new(15).unwrap()),
+            SourceCodeCharacter::new(' ', Line::new(1).unwrap(), Position::new(16).unwrap()),
+            SourceCodeCharacter::new('0', Line::new(1).unwrap(), Position::new(17).unwrap()),
+            SourceCodeCharacter::new(';', Line::new(1).unwrap(), Position::new(18).unwrap()),
+        ];
+
+        // Act
+        let remover = CommentRemover::new(source_code, vec![]).remove(false);
+
+        // Assert
+        let expected: Vec<SourceCodeCharacter> = vec![
+            SourceCodeCharacter::new('r', Line::new(1).unwrap(), Position::new(1).unwrap()),
+            SourceCodeCharacter::new('e', Line::new(1).unwrap(), Position::new(2).unwrap()),
+            SourceCodeCharacter::new('b', Line::new(1).unwrap(), Position::new(3).unwrap()),
+            SourceCodeCharacter::new('i', Line::new(1).unwrap(), Position::new(4).unwrap()),
+            SourceCodeCharacter::new('n', Line::new(1).unwrap(), Position::new(5).unwrap()),
+            SourceCodeCharacter::new('d', Line::new(1).unwrap(), Position::new(6).unwrap()),
+            SourceCodeCharacter::new(' ', Line::new(1).unwrap(), Position::new(7).unwrap()),
+            SourceCodeCharacter::new('x', Line::new(1).unwrap(), Position::new(8).unwrap()),
+            SourceCodeCharacter::new(':', Line::new(1).unwrap(), Position::new(9).unwrap()),
+            SourceCodeCharacter::new(' ', Line::new(1).unwrap(), Position::new(10).unwrap()),
+            SourceCodeCharacter::new('i', Line::new(1).unwrap(), Position::new(11).unwrap()),
+            SourceCodeCharacter::new('n', Line::new(1).unwrap(), Position::new(12).unwrap()),
+            SourceCodeCharacter::new('t', Line::new(1).unwrap(), Position::new(13).unwrap()),
+            SourceCodeCharacter::new(' ', Line::new(1).unwrap(), Position::new(14).unwrap()),
+            SourceCodeCharacter::new('=', Line::new(1).unwrap(), Position::new(15).unwrap()),
+            SourceCodeCharacter::new(' ', Line::new(1).unwrap(), Position::new(16).unwrap()),
+            SourceCodeCharacter::new('0', Line::new(1).unwrap(), Position::new(17).unwrap()),
+            SourceCodeCharacter::new(';', Line::new(1).unwrap(), Position::new(18).unwrap()),
+        ];
+
+        assert_eq!(remover.processed, expected);
     }
 }
