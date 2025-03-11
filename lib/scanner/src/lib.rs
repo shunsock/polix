@@ -1,9 +1,12 @@
 mod comment_remover;
+mod multiple_space_remover;
 mod one_character_keyword_recognizer;
 mod source_stream_generator;
 
 use comment_remover::CommentRemover;
 use log::debug;
+use multiple_space_remover::MultipleSpaceRemover;
+use one_character_keyword_recognizer::OneCharacterKeywordRecognizer;
 use source_stream_generator::SourceStreamGenerator;
 
 pub struct Scanner {
@@ -21,8 +24,17 @@ impl Scanner {
         let stream_generator =
             SourceStreamGenerator::new(self.source_code.clone(), vec![], None, None).generate();
         debug!("{:?}", stream_generator.get_processed());
+
+        let multiple_space_remover =
+            MultipleSpaceRemover::new(stream_generator.get_processed(), vec![]).remove(false);
+        debug!("{:?}", multiple_space_remover.get_processed());
+
         let comment_remover =
-            CommentRemover::new(stream_generator.get_processed(), vec![]).remove(false);
+            CommentRemover::new(multiple_space_remover.get_processed(), vec![]).remove(false);
         debug!("{:?}", comment_remover.get_processed());
+
+        let one_character_keyword_recognizer =
+            OneCharacterKeywordRecognizer::new(comment_remover.get_processed(), vec![]).recognize();
+        debug!("{:?}", one_character_keyword_recognizer.get_processed());
     }
 }
