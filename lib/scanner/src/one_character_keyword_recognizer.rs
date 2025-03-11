@@ -158,4 +158,40 @@ mod tests {
         )];
         assert_eq!(recognizer.processed, expected);
     }
+
+    #[test]
+    /// # Test recognize pass characters include both keyword and unrecognized
+    ///
+    /// ## Test Case:
+    /// - input source code is: "*+a"
+    /// - expected: multiply, add, unrecognized(a)
+    fn test_recognize_one_character_keyword_with_unrecognized() {
+        // Arrange
+        let source_text = String::from("*+a");
+        let source_code: Vec<SourceCodeCharacter> =
+            create_source_code_char_factory(source_text.clone());
+
+        // Act
+        let recognizer = OneCharacterKeywordRecognizer::new(source_code, vec![]).recognize();
+
+        // Assert
+        let expected: Vec<Token> = vec![
+            Token::new(
+                TokenKind::Keyword(Keyword::BinaryOperation(BinaryOperation::Multiply)),
+                Line::new(1).unwrap(),
+                Position::new(1).unwrap(),
+            ),
+            Token::new(
+                TokenKind::Keyword(Keyword::BinaryOperation(BinaryOperation::Add)),
+                Line::new(1).unwrap(),
+                Position::new(2).unwrap(),
+            ),
+            Token::new(
+                TokenKind::Unrecognized(String::from("a")),
+                Line::new(1).unwrap(),
+                Position::new(3).unwrap(),
+            ),
+        ];
+        assert_eq!(recognizer.processed, expected);
+    }
 }
