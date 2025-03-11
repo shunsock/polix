@@ -1,4 +1,5 @@
 mod comment_remover;
+mod one_character_keyword_recognizer;
 mod source_stream_generator;
 
 use comment_remover::CommentRemover;
