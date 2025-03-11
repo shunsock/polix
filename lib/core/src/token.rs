@@ -1,6 +1,6 @@
 use crate::source_code::{Line, Position};
 
-struct Token {
+pub struct Token {
     pub kind: TokenKind,
     pub line: Line,
     pub position: Position,
