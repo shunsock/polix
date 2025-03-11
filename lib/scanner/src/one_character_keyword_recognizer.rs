@@ -24,6 +24,10 @@ impl OneCharacterKeywordRecognizer {
         OneCharacterKeywordRecognizer { source, processed }
     }
 
+    pub fn get_processed(&self) -> Vec<Token> {
+        self.processed.clone()
+    }
+
     pub fn recognize(&mut self) -> OneCharacterKeywordRecognizer {
         match self.source.len() {
             0 => OneCharacterKeywordRecognizer::new(vec![], self.processed.clone()),
@@ -133,6 +137,61 @@ mod tests {
         }
 
         result
+    }
+
+    #[test]
+    /// # Test recognize pass with single character without any keyword
+    ///
+    /// ## Test Case:
+    /// - input source code is: "a"
+    /// - expected: Unrecognized(a)
+    fn test_recognize_one_character_without_any_keyword() {
+        // Arrange
+        let source_text = String::from("a");
+        let source_code: Vec<SourceCodeCharacter> =
+            create_source_code_char_factory(source_text.clone());
+
+        // Act
+        let recognizer = OneCharacterKeywordRecognizer::new(source_code, vec![]).recognize();
+
+        // Assert
+        let expected: Vec<Token> = vec![Token::new(
+            TokenKind::Unrecognized(String::from("a")),
+            Line::new(1).unwrap(),
+            Position::new(1).unwrap(),
+        )];
+        assert_eq!(recognizer.processed, expected);
+    }
+
+    #[test]
+    /// # Test recognize pass with single character and white space without any keyword
+    ///
+    /// ## Test Case:
+    /// - input source code is: "a "
+    /// - expected: Unrecognized(a), Unrecognized(" ")
+    fn test_recognize_one_character_and_white_space_without_any_keyword() {
+        // Arrange
+        let source_text = String::from("a ");
+        let source_code: Vec<SourceCodeCharacter> =
+            create_source_code_char_factory(source_text.clone());
+
+        // Act
+        let recognizer = OneCharacterKeywordRecognizer::new(source_code, vec![]).recognize();
+
+        // Assert
+        let expected: Vec<Token> = vec![
+            Token::new(
+                TokenKind::Unrecognized(String::from("a")),
+                Line::new(1).unwrap(),
+                Position::new(1).unwrap(),
+            ),
+            Token::new(
+                TokenKind::Unrecognized(String::from(" ")),
+                Line::new(1).unwrap(),
+                Position::new(2).unwrap(),
+            ),
+        ];
+        assert_eq!(recognizer.processed, expected);
     }
 
     #[test]
