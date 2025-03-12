@@ -21,20 +21,34 @@ impl Scanner {
     }
 
     pub fn scan(&self) {
+        debug!("Scanning source code: Generating source stream...");
         let stream_generator =
             SourceStreamGenerator::new(self.source_code.clone(), vec![], None, None).generate();
-        debug!("{:?}", stream_generator.get_processed());
+        for s in stream_generator.get_processed() {
+            debug!("{:?}", s);
+        }
 
+        debug!("Scanning source code: Removing multiple spaces...");
         let multiple_space_remover =
             MultipleSpaceRemover::new(stream_generator.get_processed(), vec![]).remove(false);
-        debug!("{:?}", multiple_space_remover.get_processed());
+        for s in multiple_space_remover.get_processed() {
+            debug!("{:?}", s);
+        }
 
+        debug!("Scanning source code: Removing comments...");
         let comment_remover =
             CommentRemover::new(multiple_space_remover.get_processed(), vec![]).remove(false);
-        debug!("{:?}", comment_remover.get_processed());
+        for s in comment_remover.get_processed() {
+            debug!("{:?}", s);
+        }
 
+        debug!("Scanning source code: Recognizing one-character keywords...");
         let one_character_keyword_recognizer =
             OneCharacterKeywordRecognizer::new(comment_remover.get_processed(), vec![]).recognize();
-        debug!("{:?}", one_character_keyword_recognizer.get_processed());
+        for s in one_character_keyword_recognizer.get_processed() {
+            debug!("{:?}", s);
+        }
+
+        debug!("Scanning source code: Done!");
     }
 }
