@@ -2,6 +2,7 @@ mod comment_remover;
 mod multiple_space_remover;
 mod one_character_keyword_recognizer;
 mod source_stream_generator;
+mod tokenizer;
 
 use comment_remover::CommentRemover;
 use log::debug;
