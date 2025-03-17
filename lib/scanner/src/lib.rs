@@ -2,12 +2,14 @@ mod comment_remover;
 mod multiple_space_remover;
 mod one_character_keyword_recognizer;
 mod source_stream_generator;
+mod tokenizer;
 
 use comment_remover::CommentRemover;
 use log::debug;
 use multiple_space_remover::MultipleSpaceRemover;
 use one_character_keyword_recognizer::OneCharacterKeywordRecognizer;
 use source_stream_generator::SourceStreamGenerator;
+use tokenizer::Tokenizer;
 
 pub struct Scanner {
     source_code: Vec<char>,
@@ -46,6 +48,13 @@ impl Scanner {
         let one_character_keyword_recognizer =
             OneCharacterKeywordRecognizer::new(comment_remover.get_processed(), vec![]).recognize();
         for s in one_character_keyword_recognizer.get_processed() {
+            debug!("{:?}", s);
+        }
+
+        debug!("Scanning source code: Tokenizing...");
+        let tokenizer =
+            Tokenizer::new(one_character_keyword_recognizer.get_processed()).tokenize();
+        for s in tokenizer.get_processed() {
             debug!("{:?}", s);
         }
 
