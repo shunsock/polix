@@ -1,4 +1,5 @@
 mod keyword;
+mod literal_string;
 
 use core::source_code::{Line, Position};
 use core::token::Token;
@@ -6,6 +7,7 @@ use core::token::TokenKind;
 
 use crate::scanner_error::{ScannerError, ScannerErrorKind};
 use keyword::recognize_keyword;
+use literal_string::recognize_literal_string;
 
 pub struct Recognizer {
     source: Vec<Token>,
@@ -50,6 +52,11 @@ impl Recognizer {
         start_position: Position,
     ) -> Result<Token, ScannerError> {
         match recognize_keyword(value.clone(), start_line, start_position) {
+            Some(token) => return Ok(token),
+            _ => {}
+        }
+
+        match recognize_literal_string(value.clone(), start_line, start_position) {
             Some(token) => return Ok(token),
             _ => {}
         }

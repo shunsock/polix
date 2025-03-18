@@ -46,7 +46,7 @@ pub enum Literal {
     Integer(i32),
     Float(f32),
     Boolean(bool),
-    String(String),
+    Text(String),
     None,
 }
 
