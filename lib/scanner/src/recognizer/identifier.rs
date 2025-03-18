@@ -6,8 +6,8 @@ use core::token::Identifier::{Struct, VariableOrFunction};
 
 
 pub fn recognize_identifier(value: String, line: Line, position: Position) -> Option<Token> {
-    let struct_regex = Regex::new(r"^[A-Z][a-zA-Z]+$").unwrap();
-    let variable_of_function_regex = Regex::new(r"^[a-z][a-z0-9_]+$").unwrap();
+    let struct_regex = Regex::new(r"^[A-Z][a-zA-Z]*$").unwrap();
+    let variable_of_function_regex = Regex::new(r"^[a-z][a-z0-9_]*$").unwrap();
 
     if struct_regex.is_match(&value) {
         Some(Token {
@@ -194,7 +194,7 @@ mod tests {
     ///
     /// ## Test Case:
     /// - input: "A"
-    /// - expected: None
+    /// - expected: Token with TokenKind::Identifier(Struct("A"))
     #[test]
     fn test_recognize_single_uppercase_letter() {
         // Arrange
@@ -203,9 +203,13 @@ mod tests {
         let position = Position::new(1).unwrap();
 
         // Act
-        let result = recognize_identifier(value, line, position);
+        let result = recognize_identifier(value.clone(), line, position);
 
         // Assert
-        assert!(result.is_none());
+        assert!(result.is_some());
+        let token = result.unwrap();
+        assert_eq!(token.kind, TokenKind::Identifier(Struct(value)));
+        assert_eq!(token.line, line);
+        assert_eq!(token.position, position);
     }
 }
