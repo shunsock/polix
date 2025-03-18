@@ -39,8 +39,6 @@ pub enum PrimitiveType {
     Float,
     Boolean,
     String,
-    Function,
-    Struct,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -71,12 +69,13 @@ pub enum Control {
 #[derive(Debug, Clone, PartialEq)]
 pub enum Declaration {
     As,
-    Bind,
     Define,
+    Function,
     Let,
     Module,
     New,
-    Rebind,
+    Return,
+    Struct,
     Use,
 }
 
@@ -106,6 +105,7 @@ pub enum BinaryOperation {
     Multiply,
     Divide,
     Equal,
+    DoubleEqual,
     NotEqual,
     GreaterThan,
     GreaterThanOrEqual,

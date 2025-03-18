@@ -1,6 +1,8 @@
 mod comment_remover;
 mod multiple_space_remover;
 mod one_character_keyword_recognizer;
+mod recognizer;
+mod scanner_error;
 mod source_stream_generator;
 mod tokenizer;
 
@@ -52,8 +54,7 @@ impl Scanner {
         }
 
         debug!("Scanning source code: Tokenizing...");
-        let tokenizer =
-            Tokenizer::new(one_character_keyword_recognizer.get_processed()).tokenize();
+        let tokenizer = Tokenizer::new(one_character_keyword_recognizer.get_processed()).tokenize();
         for s in tokenizer.get_processed() {
             debug!("{:?}", s);
         }
