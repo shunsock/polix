@@ -1,9 +1,8 @@
 use core::source_code::{Line, Position};
+use core::token::Identifier::{Struct, VariableOrFunction};
 use core::token::Token;
 use core::token::TokenKind;
 use regex::Regex;
-use core::token::Identifier::{Struct, VariableOrFunction};
-
 
 pub fn recognize_identifier(value: String, line: Line, position: Position) -> Option<Token> {
     let struct_regex = Regex::new(r"^[A-Z][a-zA-Z]*$").unwrap();

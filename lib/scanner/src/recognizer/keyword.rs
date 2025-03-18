@@ -1,7 +1,7 @@
 use core::source_code::{Line, Position};
 use core::token::Token;
 use core::token::TokenKind;
-use core::token::{BinaryOperation, Control, Declaration, Keyword, Literal, Type, PrimitiveType};
+use core::token::{BinaryOperation, Control, Declaration, Keyword, Literal, PrimitiveType, Type};
 
 pub fn recognize_keyword(value: String, line: Line, position: Position) -> Option<Token> {
     match value.as_str() {
@@ -40,16 +40,8 @@ pub fn recognize_keyword(value: String, line: Line, position: Position) -> Optio
             line,
             position,
         )),
-        "Option" => Some(Token::new(
-            TokenKind::Type(Type::Option),
-            line,
-            position,
-        )),
-        "List" => Some(Token::new(
-            TokenKind::Type(Type::List),
-            line,
-            position,
-        )),
+        "Option" => Some(Token::new(TokenKind::Type(Type::Option), line, position)),
+        "List" => Some(Token::new(TokenKind::Type(Type::List), line, position)),
         "if" => Some(Token::new(
             TokenKind::Keyword(Keyword::Control(Control::If)),
             line,
@@ -224,7 +216,10 @@ mod tests {
         // Assert
         assert!(result.is_some());
         let token = result.unwrap();
-        assert_eq!(token.kind, TokenKind::Type(Type::Primitive(PrimitiveType::Integer)));
+        assert_eq!(
+            token.kind,
+            TokenKind::Type(Type::Primitive(PrimitiveType::Integer))
+        );
         assert_eq!(token.line, line);
         assert_eq!(token.position, position);
     }
@@ -247,7 +242,10 @@ mod tests {
         // Assert
         assert!(result.is_some());
         let token = result.unwrap();
-        assert_eq!(token.kind, TokenKind::Keyword(Keyword::Control(Control::If)));
+        assert_eq!(
+            token.kind,
+            TokenKind::Keyword(Keyword::Control(Control::If))
+        );
         assert_eq!(token.line, line);
         assert_eq!(token.position, position);
     }
@@ -270,7 +268,10 @@ mod tests {
         // Assert
         assert!(result.is_some());
         let token = result.unwrap();
-        assert_eq!(token.kind, TokenKind::Keyword(Keyword::BinaryOperation(BinaryOperation::And)));
+        assert_eq!(
+            token.kind,
+            TokenKind::Keyword(Keyword::BinaryOperation(BinaryOperation::And))
+        );
         assert_eq!(token.line, line);
         assert_eq!(token.position, position);
     }

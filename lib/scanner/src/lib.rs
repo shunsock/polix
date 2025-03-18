@@ -7,14 +7,14 @@ mod source_stream_generator;
 mod tokenizer;
 
 use comment_remover::CommentRemover;
+use core::token::Token;
 use log::debug;
 use multiple_space_remover::MultipleSpaceRemover;
 use one_character_keyword_recognizer::OneCharacterKeywordRecognizer;
+use recognizer::Recognizer;
+use scanner_error::ScannerError;
 use source_stream_generator::SourceStreamGenerator;
 use tokenizer::Tokenizer;
-use recognizer::Recognizer;
-use core::token::Token;
-use scanner_error::ScannerError;
 
 pub struct Scanner {
     source_code: Vec<char>,

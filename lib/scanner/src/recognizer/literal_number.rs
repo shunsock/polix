@@ -2,10 +2,7 @@ use core::source_code::{Line, Position};
 use core::token::Token;
 use core::token::TokenKind;
 
-use core::token::Literal::{
-    Integer,
-    Float,
-};
+use core::token::Literal::{Float, Integer};
 
 pub fn recognize_literal_number(value: String, line: Line, position: Position) -> Option<Token> {
     if let Ok(int_value) = value.parse::<i64>() {
@@ -28,7 +25,7 @@ pub fn recognize_literal_number(value: String, line: Line, position: Position) -
 #[cfg(test)]
 mod tests {
     use super::*;
-    use core::token::Literal;  // Added this import for the tests
+    use core::token::Literal; // Added this import for the tests
 
     /// # Test number literal recognition for an integer
     ///

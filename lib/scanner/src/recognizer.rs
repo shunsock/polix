@@ -1,17 +1,17 @@
-mod keyword;
-mod literal_string;
-mod literal_number;
 mod identifier;
+mod keyword;
+mod literal_number;
+mod literal_string;
 
 use core::source_code::{Line, Position};
 use core::token::Token;
 use core::token::TokenKind;
 
+use crate::recognizer::identifier::recognize_identifier;
+use crate::recognizer::literal_number::recognize_literal_number;
 use crate::scanner_error::{ScannerError, ScannerErrorKind};
 use keyword::recognize_keyword;
 use literal_string::recognize_literal_string;
-use crate::recognizer::identifier::recognize_identifier;
-use crate::recognizer::literal_number::recognize_literal_number;
 
 pub struct Recognizer {
     source: Vec<Token>,
@@ -38,11 +38,7 @@ impl Recognizer {
             let t = source.remove(0);
             match t.kind {
                 TokenKind::Unrecognized(value) => {
-                    let token = Self::recognize_token(
-                        value.clone(),
-                        t.line,
-                        t.position,
-                    )?;
+                    let token = Self::recognize_token(value.clone(), t.line, t.position)?;
                     processed.push(token);
                 }
                 _ => {
