@@ -43,8 +43,8 @@ pub enum PrimitiveType {
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Literal {
-    Integer(i32),
-    Float(f32),
+    Integer(i64),
+    Float(f64),
     Boolean(bool),
     Text(String),
     None,
