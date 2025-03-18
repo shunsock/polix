@@ -113,4 +113,99 @@ mod tests {
         // Assert
         assert!(result.is_none());
     }
+
+    /// # Test identifier recognition for an empty string
+    ///
+    /// ## Test Case:
+    /// - input: ""
+    /// - expected: None
+    #[test]
+    fn test_recognize_empty_identifier() {
+        // Arrange
+        let value = String::from("");
+        let line = Line::new(1).unwrap();
+        let position = Position::new(1).unwrap();
+
+        // Act
+        let result = recognize_identifier(value, line, position);
+
+        // Assert
+        assert!(result.is_none());
+    }
+
+    /// # Test identifier recognition for a string containing spaces
+    ///
+    /// ## Test Case:
+    /// - input: "user name"
+    /// - expected: None
+    #[test]
+    fn test_recognize_identifier_with_spaces() {
+        // Arrange
+        let value = String::from("user name");
+        let line = Line::new(1).unwrap();
+        let position = Position::new(1).unwrap();
+
+        // Act
+        let result = recognize_identifier(value, line, position);
+
+        // Assert
+        assert!(result.is_none());
+    }
+
+    /// # Test identifier recognition for an identifier starting with underscore
+    ///
+    /// ## Test Case:
+    /// - input: "_variable"
+    /// - expected: None
+    #[test]
+    fn test_recognize_identifier_starting_with_underscore() {
+        // Arrange
+        let value = String::from("_variable");
+        let line = Line::new(1).unwrap();
+        let position = Position::new(1).unwrap();
+
+        // Act
+        let result = recognize_identifier(value, line, position);
+
+        // Assert
+        assert!(result.is_none());
+    }
+
+    /// # Test identifier recognition for a mixed case identifier starting with lowercase
+    ///
+    /// ## Test Case:
+    /// - input: "userAccount"
+    /// - expected: None
+    #[test]
+    fn test_recognize_mixed_case_identifier() {
+        // Arrange
+        let value = String::from("userAccount");
+        let line = Line::new(1).unwrap();
+        let position = Position::new(1).unwrap();
+
+        // Act
+        let result = recognize_identifier(value, line, position);
+
+        // Assert
+        assert!(result.is_none());
+    }
+
+    /// # Test identifier recognition for a single uppercase letter
+    ///
+    /// ## Test Case:
+    /// - input: "A"
+    /// - expected: None
+    #[test]
+    fn test_recognize_single_uppercase_letter() {
+        // Arrange
+        let value = String::from("A");
+        let line = Line::new(1).unwrap();
+        let position = Position::new(1).unwrap();
+
+        // Act
+        let result = recognize_identifier(value, line, position);
+
+        // Assert
+        assert!(result.is_none());
+    }
 }
