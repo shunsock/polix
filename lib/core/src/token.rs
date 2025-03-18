@@ -24,6 +24,7 @@ pub enum TokenKind {
     Literal(Literal),
     Type(Type),
     Keyword(Keyword),
+    Identifier(Identifier),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -39,16 +40,14 @@ pub enum PrimitiveType {
     Float,
     Boolean,
     String,
-    Function,
-    Struct,
 }
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Literal {
-    Integer(i32),
-    Float(f32),
+    Integer(i64),
+    Float(f64),
     Boolean(bool),
-    String(String),
+    Text(String),
     None,
 }
 
@@ -71,12 +70,13 @@ pub enum Control {
 #[derive(Debug, Clone, PartialEq)]
 pub enum Declaration {
     As,
-    Bind,
     Define,
+    Function,
     Let,
     Module,
     New,
-    Rebind,
+    Return,
+    Struct,
     Use,
 }
 
@@ -106,6 +106,7 @@ pub enum BinaryOperation {
     Multiply,
     Divide,
     Equal,
+    DoubleEqual,
     NotEqual,
     GreaterThan,
     GreaterThanOrEqual,
@@ -114,4 +115,12 @@ pub enum BinaryOperation {
     And,
     Or,
     Not,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum Identifier {
+    // [A-Z][a-zA-Z]+
+    Struct(String),
+    // [a-z][a-z0-9_]+
+    VariableOrFunction(String),
 }

@@ -1,13 +1,18 @@
 mod comment_remover;
 mod multiple_space_remover;
 mod one_character_keyword_recognizer;
+mod recognizer;
+mod scanner_error;
 mod source_stream_generator;
 mod tokenizer;
 
 use comment_remover::CommentRemover;
+use core::token::Token;
 use log::debug;
 use multiple_space_remover::MultipleSpaceRemover;
 use one_character_keyword_recognizer::OneCharacterKeywordRecognizer;
+use recognizer::Recognizer;
+use scanner_error::ScannerError;
 use source_stream_generator::SourceStreamGenerator;
 use tokenizer::Tokenizer;
 
@@ -22,7 +27,7 @@ impl Scanner {
         }
     }
 
-    pub fn scan(&self) {
+    pub fn scan(&self) -> Result<Vec<Token>, ScannerError> {
         debug!("Scanning source code: Generating source stream...");
         let stream_generator =
             SourceStreamGenerator::new(self.source_code.clone(), vec![], None, None).generate();
@@ -52,12 +57,18 @@ impl Scanner {
         }
 
         debug!("Scanning source code: Tokenizing...");
-        let tokenizer =
-            Tokenizer::new(one_character_keyword_recognizer.get_processed()).tokenize();
+        let tokenizer = Tokenizer::new(one_character_keyword_recognizer.get_processed()).tokenize();
         for s in tokenizer.get_processed() {
             debug!("{:?}", s);
         }
 
+        debug!("Scanning source code: Recognizing tokens...");
+        let recognizer = Recognizer::new(tokenizer.get_processed()).recognize()?;
+        for s in recognizer.get_processed() {
+            debug!("{:?}", s);
+        }
+
         debug!("Scanning source code: Done!");
+        Ok(recognizer.get_processed())
     }
 }
