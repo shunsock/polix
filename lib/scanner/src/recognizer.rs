@@ -10,6 +10,8 @@ use core::token::TokenKind;
 use crate::scanner_error::{ScannerError, ScannerErrorKind};
 use keyword::recognize_keyword;
 use literal_string::recognize_literal_string;
+use crate::recognizer::identifier::recognize_identifier;
+use crate::recognizer::literal_number::recognize_literal_number;
 
 pub struct Recognizer {
     source: Vec<Token>,
@@ -28,7 +30,7 @@ impl Recognizer {
         self.processed.clone()
     }
 
-    pub fn recognize(self) -> Self {
+    pub fn recognize(self) -> Result<Self, ScannerError> {
         let mut source = self.source.clone();
         let mut processed = self.processed.clone();
 
@@ -36,7 +38,11 @@ impl Recognizer {
             let t = source.remove(0);
             match t.kind {
                 TokenKind::Unrecognized(value) => {
-                    let token = Token::new(TokenKind::Unrecognized(value), t.line, t.position);
+                    let token = Self::recognize_token(
+                        value.clone(),
+                        t.line,
+                        t.position,
+                    )?;
                     processed.push(token);
                 }
                 _ => {
@@ -45,7 +51,7 @@ impl Recognizer {
             }
         }
 
-        Recognizer { source, processed }
+        Ok(Recognizer { source, processed })
     }
 
     fn recognize_token(
@@ -58,7 +64,17 @@ impl Recognizer {
             _ => {}
         }
 
+        match recognize_literal_number(value.clone(), start_line, start_position) {
+            Some(token) => return Ok(token),
+            _ => {}
+        }
+
         match recognize_literal_string(value.clone(), start_line, start_position) {
+            Some(token) => return Ok(token),
+            _ => {}
+        }
+
+        match recognize_identifier(value.clone(), start_line, start_position) {
             Some(token) => return Ok(token),
             _ => {}
         }

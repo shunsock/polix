@@ -12,6 +12,9 @@ use multiple_space_remover::MultipleSpaceRemover;
 use one_character_keyword_recognizer::OneCharacterKeywordRecognizer;
 use source_stream_generator::SourceStreamGenerator;
 use tokenizer::Tokenizer;
+use recognizer::Recognizer;
+use core::token::Token;
+use scanner_error::ScannerError;
 
 pub struct Scanner {
     source_code: Vec<char>,
@@ -24,7 +27,7 @@ impl Scanner {
         }
     }
 
-    pub fn scan(&self) {
+    pub fn scan(&self) -> Result<Vec<Token>, ScannerError> {
         debug!("Scanning source code: Generating source stream...");
         let stream_generator =
             SourceStreamGenerator::new(self.source_code.clone(), vec![], None, None).generate();
@@ -59,6 +62,13 @@ impl Scanner {
             debug!("{:?}", s);
         }
 
+        debug!("Scanning source code: Recognizing tokens...");
+        let recognizer = Recognizer::new(tokenizer.get_processed()).recognize()?;
+        for s in recognizer.get_processed() {
+            debug!("{:?}", s);
+        }
+
         debug!("Scanning source code: Done!");
+        Ok(recognizer.get_processed())
     }
 }

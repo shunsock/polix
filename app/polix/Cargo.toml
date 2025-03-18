@@ -16,3 +16,5 @@ clap = { version = "4.5.28", features = ["derive"] }
 env_logger = "0.11.6"
 log = "0.4.25"
 scanner = { version = "0.1.0", path = "../../lib/scanner" }
+reporter = { version = "0.1.0", path = "../../lib/reporter" }
+core = { version = "0.1.0", path = "../../lib/core" }
