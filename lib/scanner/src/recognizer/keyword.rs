@@ -1,10 +1,20 @@
 use core::source_code::{Line, Position};
 use core::token::Token;
 use core::token::TokenKind;
-use core::token::{BinaryOperation, Control, Declaration, Keyword};
+use core::token::{BinaryOperation, Control, Declaration, Keyword, Literal};
 
 pub fn recognize_keyword(value: String, line: Line, position: Position) -> Option<Token> {
     match value.as_str() {
+        "true" => Some(Token::new(
+            TokenKind::Literal(Literal::Boolean(true)),
+            line,
+            position,
+        )),
+        "false" => Some(Token::new(
+            TokenKind::Literal(Literal::Boolean(false)),
+            line,
+            position,
+        )),
         "if" => Some(Token::new(
             TokenKind::Keyword(Keyword::Control(Control::If)),
             line,
