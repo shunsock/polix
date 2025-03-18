@@ -1,7 +1,7 @@
 use core::source_code::{Line, Position};
 use core::token::Token;
 use core::token::TokenKind;
-use core::token::{BinaryOperation, Control, Declaration, Keyword, Literal};
+use core::token::{BinaryOperation, Control, Declaration, Keyword, Literal, Type, PrimitiveType};
 
 pub fn recognize_keyword(value: String, line: Line, position: Position) -> Option<Token> {
     match value.as_str() {
@@ -12,6 +12,41 @@ pub fn recognize_keyword(value: String, line: Line, position: Position) -> Optio
         )),
         "false" => Some(Token::new(
             TokenKind::Literal(Literal::Boolean(false)),
+            line,
+            position,
+        )),
+        "none" => Some(Token::new(
+            TokenKind::Literal(Literal::None),
+            line,
+            position,
+        )),
+        "int" => Some(Token::new(
+            TokenKind::Type(Type::Primitive(PrimitiveType::Integer)),
+            line,
+            position,
+        )),
+        "float" => Some(Token::new(
+            TokenKind::Type(Type::Primitive(PrimitiveType::Float)),
+            line,
+            position,
+        )),
+        "bool" => Some(Token::new(
+            TokenKind::Type(Type::Primitive(PrimitiveType::Boolean)),
+            line,
+            position,
+        )),
+        "string" => Some(Token::new(
+            TokenKind::Type(Type::Primitive(PrimitiveType::String)),
+            line,
+            position,
+        )),
+        "Option" => Some(Token::new(
+            TokenKind::Type(Type::Option),
+            line,
+            position,
+        )),
+        "List" => Some(Token::new(
+            TokenKind::Type(Type::List),
             line,
             position,
         )),
