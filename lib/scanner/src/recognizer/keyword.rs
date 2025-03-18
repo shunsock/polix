@@ -155,3 +155,142 @@ pub fn recognize_keyword(value: String, line: Line, position: Position) -> Optio
         _ => None,
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// # Test keyword recognition for boolean literals
+    ///
+    /// ## Test Case:
+    /// - input: "true"
+    /// - expected: Token with TokenKind::Literal(Literal::Boolean(true))
+    #[test]
+    fn test_recognize_boolean_true() {
+        // Arrange
+        let value = String::from("true");
+        let line = Line::new(1).unwrap();
+        let position = Position::new(1).unwrap();
+
+        // Act
+        let result = recognize_keyword(value, line, position);
+
+        // Assert
+        assert!(result.is_some());
+        let token = result.unwrap();
+        assert_eq!(token.kind, TokenKind::Literal(Literal::Boolean(true)));
+        assert_eq!(token.line, line);
+        assert_eq!(token.position, position);
+    }
+
+    /// # Test keyword recognition for boolean literals
+    ///
+    /// ## Test Case:
+    /// - input: "false"
+    /// - expected: Token with TokenKind::Literal(Literal::Boolean(false))
+    #[test]
+    fn test_recognize_boolean_false() {
+        // Arrange
+        let value = String::from("false");
+        let line = Line::new(1).unwrap();
+        let position = Position::new(1).unwrap();
+
+        // Act
+        let result = recognize_keyword(value, line, position);
+
+        // Assert
+        assert!(result.is_some());
+        let token = result.unwrap();
+        assert_eq!(token.kind, TokenKind::Literal(Literal::Boolean(false)));
+        assert_eq!(token.line, line);
+        assert_eq!(token.position, position);
+    }
+
+    /// # Test keyword recognition for primitive types
+    ///
+    /// ## Test Case:
+    /// - input: "int"
+    /// - expected: Token with TokenKind::Type(Type::Primitive(PrimitiveType::Integer))
+    #[test]
+    fn test_recognize_primitive_type() {
+        // Arrange
+        let value = String::from("int");
+        let line = Line::new(1).unwrap();
+        let position = Position::new(1).unwrap();
+
+        // Act
+        let result = recognize_keyword(value, line, position);
+
+        // Assert
+        assert!(result.is_some());
+        let token = result.unwrap();
+        assert_eq!(token.kind, TokenKind::Type(Type::Primitive(PrimitiveType::Integer)));
+        assert_eq!(token.line, line);
+        assert_eq!(token.position, position);
+    }
+
+    /// # Test keyword recognition for control keywords
+    ///
+    /// ## Test Case:
+    /// - input: "if"
+    /// - expected: Token with TokenKind::Keyword(Keyword::Control(Control::If))
+    #[test]
+    fn test_recognize_control_keyword() {
+        // Arrange
+        let value = String::from("if");
+        let line = Line::new(1).unwrap();
+        let position = Position::new(1).unwrap();
+
+        // Act
+        let result = recognize_keyword(value, line, position);
+
+        // Assert
+        assert!(result.is_some());
+        let token = result.unwrap();
+        assert_eq!(token.kind, TokenKind::Keyword(Keyword::Control(Control::If)));
+        assert_eq!(token.line, line);
+        assert_eq!(token.position, position);
+    }
+
+    /// # Test keyword recognition for binary operations
+    ///
+    /// ## Test Case:
+    /// - input: "&&"
+    /// - expected: Token with TokenKind::Keyword(Keyword::BinaryOperation(BinaryOperation::And))
+    #[test]
+    fn test_recognize_binary_operation() {
+        // Arrange
+        let value = String::from("&&");
+        let line = Line::new(1).unwrap();
+        let position = Position::new(1).unwrap();
+
+        // Act
+        let result = recognize_keyword(value, line, position);
+
+        // Assert
+        assert!(result.is_some());
+        let token = result.unwrap();
+        assert_eq!(token.kind, TokenKind::Keyword(Keyword::BinaryOperation(BinaryOperation::And)));
+        assert_eq!(token.line, line);
+        assert_eq!(token.position, position);
+    }
+
+    /// # Test keyword recognition for unrecognized words
+    ///
+    /// ## Test Case:
+    /// - input: "unknown"
+    /// - expected: None
+    #[test]
+    fn test_recognize_unrecognized_word() {
+        // Arrange
+        let value = String::from("unknown");
+        let line = Line::new(1).unwrap();
+        let position = Position::new(1).unwrap();
+
+        // Act
+        let result = recognize_keyword(value, line, position);
+
+        // Assert
+        assert!(result.is_none());
+    }
+}

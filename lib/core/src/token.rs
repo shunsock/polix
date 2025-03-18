@@ -121,10 +121,6 @@ pub enum BinaryOperation {
 pub enum Identifier {
     // [A-Z][a-zA-Z]+
     Struct(String),
-    // [a-z][a-zA-Z0-9_]+
-    Function(String),
     // [a-z][a-z0-9_]+
-    Variable(String),
-    // [a-z]+
-    Module(String),
+    VariableOrFunction(String),
 }
