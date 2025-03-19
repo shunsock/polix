@@ -1,20 +1,93 @@
+//! # Polix Reporter
+//!
+//! `reporter` is a crate for the Polix language that provides error reporting functionality.
+//! It helps display clear, user-friendly error messages with proper source location information.
+//!
+//! ## Features
+//!
+//! - Line and column positioning of errors
+//! - Visual indication of error location with carets
+//! - Clear error messages for better debugging
+//!
+//! ## Example
+//!
+//! ```
+//! use core::source_code::{Line, Position};
+//! use reporter::Reporter;
+//!
+//! # fn main() -> Result<(), Box<dyn std::error::Error>> {
+//! let source_code = "let x: int = \"hello\";".to_string();
+//! let reporter = Reporter::new(source_code);
+//!
+//! // Report an error at line 1, position 12
+//! reporter.report(
+//!     Line::new(1).unwrap(),
+//!     Position::new(12).unwrap(),
+//!     "Type mismatch: expected int, found string"
+//! );
+//! # Ok(())
+//! # }
+//! ```
+//!
+//! This will produce output like:
+//!
+//! ```text
+//! ERROR: position: 13, line: 1, Type mismatch: expected int, found string
+//! let x: int = "hello";
+//!             ^
+//! ```
+
 use core::source_code::Line;
 use core::source_code::Position;
 
-/// ## Reporter
-/// `Reporter` is a struct that is responsible for reporting errors and warnings to the user.
+/// A struct that is responsible for reporting errors and warnings to the user.
 ///
-/// ### Arguments
-/// - `src` - A string that contains the source code.
+/// The Reporter takes a source code string and provides methods to report errors
+/// with line and position information, showing the problematic code and indicating
+/// the exact position with a caret (^).
 ///
-/// ### Methods
-/// - `new` - Creates a new instance of `Reporter`.
-/// - `report` - Reports an error or warning to the user.
+/// # Examples
+///
+/// ```
+/// use core::source_code::{Line, Position};
+/// use reporter::Reporter;
+///
+/// # fn main() -> Result<(), Box<dyn std::error::Error>> {
+/// let src = "let x = 5;\nlet y = \"hello\";\n".to_string();
+/// let reporter = Reporter::new(src);
+///
+/// // Report an error on line 2, position 8
+/// reporter.report(
+///     Line::new(2).unwrap(),
+///     Position::new(8).unwrap(),
+///     "String literals must use double quotes"
+/// );
+/// # Ok(())
+/// # }
+/// ```
 pub struct Reporter {
     source_code_lines: Vec<String>,
 }
 
 impl Reporter {
+    /// Creates a new instance of the Reporter.
+    ///
+    /// # Arguments
+    ///
+    /// * `src` - A string containing the source code to be analyzed
+    ///
+    /// # Returns
+    ///
+    /// A new Reporter instance
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use reporter::Reporter;
+    ///
+    /// let src = "let x = 5;".to_string();
+    /// let reporter = Reporter::new(src);
+    /// ```
     pub fn new(src: String) -> Self {
         let mut source_code_lines: Vec<String> = Vec::new();
         for line in src.lines() {
@@ -23,6 +96,37 @@ impl Reporter {
         Self { source_code_lines }
     }
 
+    /// Reports an error to the user with line, position and message information.
+    ///
+    /// This method prints:
+    /// 1. An error message with position and line information
+    /// 2. The line of code where the error occurred
+    /// 3. A caret (^) pointing to the exact position of the error
+    ///
+    /// # Arguments
+    ///
+    /// * `line` - The line number where the error occurred
+    /// * `position` - The position (column) where the error occurred
+    /// * `message` - The error message to display
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use core::source_code::{Line, Position};
+    /// use reporter::Reporter;
+    ///
+    /// # fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let src = "let x = 5;".to_string();
+    /// let reporter = Reporter::new(src);
+    ///
+    /// reporter.report(
+    ///     Line::new(1).unwrap(),
+    ///     Position::new(4).unwrap(),
+    ///     "Variable name cannot be a single letter"
+    /// );
+    /// # Ok(())
+    /// # }
+    /// ```
     pub fn report(&self, line: Line, position: Position, message: &str) {
         let target_line_content: String = self.get_line_content(line);
         let caret: String = self.generate_caret(position);
@@ -36,6 +140,19 @@ impl Reporter {
         eprintln!("{}", caret);
     }
 
+    /// Gets the content of a specific line from the source code.
+    ///
+    /// # Arguments
+    ///
+    /// * `line` - The line number to retrieve
+    ///
+    /// # Returns
+    ///
+    /// The content of the specified line as a String
+    ///
+    /// # Panics
+    ///
+    /// If the line number is out of range for the source code
     fn get_line_content(&self, line: Line) -> String {
         match self.source_code_lines.get((line.number.get() - 1) as usize) {
             Some(content) => content.to_string(),
@@ -47,6 +164,15 @@ impl Reporter {
         }
     }
 
+    /// Generates a caret string to point to the error position.
+    ///
+    /// # Arguments
+    ///
+    /// * `position` - The position (column) where the error occurred
+    ///
+    /// # Returns
+    ///
+    /// A string with spaces followed by a caret (^) at the error position
     fn generate_caret(&self, position: Position) -> String {
         let position: u32 = position.number.get();
         let mut caret: String = String::new();
