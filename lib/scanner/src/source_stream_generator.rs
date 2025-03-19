@@ -85,7 +85,7 @@ impl SourceStreamGenerator {
                 processed.push(source_code_char);
 
                 // if the first character is a newline character, increment the line and reset the position
-                if (first_char == '\n') {
+                if first_char == '\n' {
                     return SourceStreamGenerator::new(
                         rest_chars,
                         processed,
@@ -170,6 +170,105 @@ mod tests {
             SourceCodeCharacter::new('c', Line::new(2).unwrap(), Position::new(2).unwrap()),
         ];
 
+        assert_eq!(stream_creator.processed, expected);
+    }
+
+    #[test]
+    /// # Test StreamCreator with empty source code
+    /// The source code is empty
+    /// The expected result is an empty stream
+    fn test_parse_empty_source_code() {
+        // Arrange
+        let source_code: Vec<char> = vec![];
+        let stream_creator = SourceStreamGenerator::new(source_code, vec![], None, None);
+
+        // Act
+        let stream_creator: SourceStreamGenerator = stream_creator.generate();
+
+        // Assert
+        let expected: Vec<SourceCodeCharacter> = vec![];
+        assert_eq!(stream_creator.processed, expected);
+    }
+
+    #[test]
+    /// # Test StreamCreator with multiple consecutive newlines
+    /// The source code is `['a', '\n', '\n', 'b']`
+    /// The expected result includes proper line increments across consecutive newlines
+    fn test_parse_source_code_with_multiple_newlines() {
+        // Arrange
+        let source_code: Vec<char> = vec!['a', '\n', '\n', 'b'];
+        let stream_creator = SourceStreamGenerator::new(source_code, vec![], None, None);
+
+        // Act
+        let stream_creator: SourceStreamGenerator = stream_creator.generate();
+
+        // Assert
+        let expected: Vec<SourceCodeCharacter> = vec![
+            SourceCodeCharacter::new('a', Line::new(1).unwrap(), Position::new(1).unwrap()),
+            SourceCodeCharacter::new('\n', Line::new(1).unwrap(), Position::new(2).unwrap()),
+            SourceCodeCharacter::new('\n', Line::new(2).unwrap(), Position::new(1).unwrap()),
+            SourceCodeCharacter::new('b', Line::new(3).unwrap(), Position::new(1).unwrap()),
+        ];
+        assert_eq!(stream_creator.processed, expected);
+    }
+
+    #[test]
+    /// # Test StreamCreator initialized with explicit line and position
+    /// The source code is `['a', 'b']` with starting line 3, position 5
+    fn test_custom_initialization() {
+        // Arrange
+        let source_code: Vec<char> = vec!['a', 'b'];
+        let stream_creator = SourceStreamGenerator::new(source_code, vec![], Some(3), Some(5));
+
+        // Act
+        let stream_creator: SourceStreamGenerator = stream_creator.generate();
+
+        // Assert
+        let expected: Vec<SourceCodeCharacter> = vec![
+            SourceCodeCharacter::new('a', Line::new(3).unwrap(), Position::new(5).unwrap()),
+            SourceCodeCharacter::new('b', Line::new(3).unwrap(), Position::new(6).unwrap()),
+        ];
+        assert_eq!(stream_creator.processed, expected);
+    }
+
+    #[test]
+    /// # Test get_processed method
+    /// Verify that get_processed returns the correct vector of SourceCodeCharacters
+    fn test_get_processed() {
+        // Arrange
+        let source_code: Vec<char> = vec!['a', 'b'];
+        let stream_creator = SourceStreamGenerator::new(source_code, vec![], None, None);
+        let stream_creator = stream_creator.generate();
+
+        // Act
+        let processed = stream_creator.get_processed();
+
+        // Assert
+        let expected: Vec<SourceCodeCharacter> = vec![
+            SourceCodeCharacter::new('a', Line::new(1).unwrap(), Position::new(1).unwrap()),
+            SourceCodeCharacter::new('b', Line::new(1).unwrap(), Position::new(2).unwrap()),
+        ];
+        assert_eq!(processed, expected);
+    }
+
+    #[test]
+    /// # Test StreamCreator with whitespace characters
+    /// The source code includes space and tab characters
+    fn test_parse_source_code_with_whitespace() {
+        // Arrange
+        let source_code: Vec<char> = vec!['a', ' ', '\t', 'b'];
+        let stream_creator = SourceStreamGenerator::new(source_code, vec![], None, None);
+
+        // Act
+        let stream_creator: SourceStreamGenerator = stream_creator.generate();
+
+        // Assert
+        let expected: Vec<SourceCodeCharacter> = vec![
+            SourceCodeCharacter::new('a', Line::new(1).unwrap(), Position::new(1).unwrap()),
+            SourceCodeCharacter::new(' ', Line::new(1).unwrap(), Position::new(2).unwrap()),
+            SourceCodeCharacter::new('\t', Line::new(1).unwrap(), Position::new(3).unwrap()),
+            SourceCodeCharacter::new('b', Line::new(1).unwrap(), Position::new(4).unwrap()),
+        ];
         assert_eq!(stream_creator.processed, expected);
     }
 }
