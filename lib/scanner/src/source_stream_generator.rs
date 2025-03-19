@@ -1,7 +1,16 @@
+//! Source stream generator module.
+//!
+//! This module provides functionality to convert raw source code characters into a stream of
+//! `SourceCodeCharacter` instances with line and position tracking.
+
 use core::source_code::Line;
 use core::source_code::Position;
 use core::source_code::SourceCodeCharacter;
 
+/// A generator that transforms raw source code into a stream of characters with position information.
+///
+/// The `SourceStreamGenerator` processes source code character by character, tracking line numbers
+/// and positions. It handles line breaks by incrementing the line counter and resetting the position.
 #[derive(Debug, PartialEq, Clone)]
 pub struct SourceStreamGenerator {
     rest_source_code: Vec<char>,
@@ -11,6 +20,18 @@ pub struct SourceStreamGenerator {
 }
 
 impl SourceStreamGenerator {
+    /// Creates a new `SourceStreamGenerator` instance.
+    ///
+    /// # Parameters
+    ///
+    /// * `rest_source_code` - The raw source code characters to be processed
+    /// * `processed` - Any previously processed source code characters
+    /// * `index` - The current line number (defaults to 1 if None)
+    /// * `position` - The current character position within the line (defaults to 1 if None)
+    ///
+    /// # Returns
+    ///
+    /// A new `SourceStreamGenerator` configured with the provided parameters
     pub fn new(
         rest_source_code: Vec<char>,
         processed: Vec<SourceCodeCharacter>,
@@ -33,6 +54,15 @@ impl SourceStreamGenerator {
         }
     }
 
+    /// Processes the source code and generates a stream of characters with position information.
+    ///
+    /// This method recursively processes each character in the source code, creating
+    /// `SourceCodeCharacter` objects that include line and position information. It handles
+    /// newlines by incrementing the line counter and resetting the position counter.
+    ///
+    /// # Returns
+    ///
+    /// A new `SourceStreamGenerator` with all characters processed
     pub fn generate(&self) -> Self {
         match self.rest_source_code.len() {
             0 => self.clone(),
@@ -55,7 +85,7 @@ impl SourceStreamGenerator {
                 processed.push(source_code_char);
 
                 // if the first character is a newline character, increment the line and reset the position
-                if first_char == '\n' {
+                if (first_char == '\n') {
                     return SourceStreamGenerator::new(
                         rest_chars,
                         processed,
@@ -77,6 +107,11 @@ impl SourceStreamGenerator {
         }
     }
 
+    /// Returns the processed stream of source code characters.
+    ///
+    /// # Returns
+    ///
+    /// A vector of `SourceCodeCharacter` objects representing the processed source code
     pub fn get_processed(&self) -> Vec<SourceCodeCharacter> {
         self.processed.clone()
     }
