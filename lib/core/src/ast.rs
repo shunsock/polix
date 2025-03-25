@@ -25,6 +25,11 @@ pub enum Expression {
         line: Line,
         position: Position,
     },
+    Return {
+        value: Box<Expression>,
+        line: Line,
+        position: Position,
+    },
 }
 
 pub enum Primary {
