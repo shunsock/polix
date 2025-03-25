@@ -93,7 +93,6 @@ pub enum Statement {
         name: String,
         generics: Option<Vec<GenericParameter>>,
         arguments: HashMap<String, PolixType>,
-        mutable: bool,
         return_type: PolixType,
         body: Vec<Ast>,
         line: Line,
@@ -141,6 +140,10 @@ pub enum PolixType {
     },
     Struct(String),
     Option(Box<PolixType>),
+    Result {
+        ok: Box<PolixType>,
+        error: Box<PolixType>,
+    },
 }
 
 pub struct GenericParameter {
