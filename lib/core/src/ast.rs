@@ -30,6 +30,13 @@ pub enum Expression {
         line: Line,
         position: Position,
     },
+    Match {
+        expression: Box<Expression>,
+        cases: Vec<(Constant, Vec<Expression>)>,
+        default: Option<Vec<Expression>>,
+        line: Line,
+        position: Position,
+    },
 }
 
 pub enum Primary {
@@ -104,13 +111,6 @@ pub enum Statement {
         condition: Box<Ast>,
         true_branch: Vec<Ast>,
         false_branch: Option<Vec<Ast>>,
-        line: Line,
-        position: Position,
-    },
-    Match {
-        expression: Box<Ast>,
-        cases: Vec<(Constant, Vec<Ast>)>,
-        default: Option<Vec<Ast>>,
         line: Line,
         position: Position,
     },
