@@ -132,7 +132,7 @@ impl Reporter {
         let caret: String = self.generate_caret(position);
         eprintln!(
             "ERROR: position: {}, line: {}, {}",
-            position.number.get() + 1,
+            position.number.get(),
             line.number.get(),
             message
         );
