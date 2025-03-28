@@ -84,6 +84,12 @@ pub enum Constant {
     None,
 }
 
+pub struct Block {
+    pub statements: Vec<Ast>,
+    pub line: Line,
+    pub position: Position,
+}
+
 pub enum Statement {
     Assign {
         assign_name: String,
@@ -94,13 +100,14 @@ pub enum Statement {
         line: Line,
         position: Position,
     },
+    Block(Block),
     DefineFunction {
         name: String,
         generics: Option<Vec<GenericParameter>>,
         arguments: HashMap<String, PolixType>,
         return_type: PolixType,
         public: bool,
-        body: Vec<Ast>,
+        body: Block,
         line: Line,
         position: Position,
     },
@@ -114,28 +121,28 @@ pub enum Statement {
         position: Position,
     },
     If {
-        condition: Box<Ast>,
-        true_branch: Vec<Ast>,
-        false_branch: Option<Vec<Ast>>,
+        condition: Box<Expression>,
+        true_branch: Block,
+        false_branch: Option<Block>,
         line: Line,
         position: Position,
     },
     While {
-        condition: Box<Ast>,
-        body: Vec<Ast>,
+        condition: Box<Expression>,
+        body: Vec<Block>,
         line: Line,
         position: Position,
     },
     Loop {
-        condition: Box<Ast>,
-        body: Vec<Ast>,
+        condition: Box<Expression>,
+        body: Vec<Block>,
         line: Line,
         position: Position,
     },
     Switch {
-        expression: Box<Ast>,
-        cases: Vec<(Constant, Vec<Ast>)>,
-        default: Option<Vec<Ast>>,
+        expression: Box<Expression>,
+        cases: Vec<(Constant, Block)>,
+        default: Option<Block>,
         line: Line,
         position: Position,
     },
