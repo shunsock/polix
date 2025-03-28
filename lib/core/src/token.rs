@@ -73,7 +73,7 @@ pub enum Declaration {
     Assign,
     Define,
     Function,
-    Global,
+    Public,
     Let,
     Module,
     Mutable,
