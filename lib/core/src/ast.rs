@@ -133,7 +133,7 @@ pub enum Statement {
     Assign {
         assign_name: String,
         mutable: bool,
-        global: bool,
+        public: bool,
         kind: PolixType,
         value: Box<Expression>,
         line: Line,
@@ -145,7 +145,7 @@ pub enum Statement {
         generics: Option<Vec<GenericParameter>>,
         arguments: HashMap<String, PolixType>,
         return_type: PolixType,
-        global: bool,
+        public: bool,
         body: Block,
         line: Line,
         position: Position,
@@ -153,7 +153,7 @@ pub enum Statement {
     DefineStruct {
         name: String,
         generics: Option<Vec<GenericParameter>>,
-        global: bool,
+        public: bool,
         mutable: bool,
         fields: Vec<(String, PolixType)>,
         line: Line,
@@ -163,6 +163,16 @@ pub enum Statement {
         condition: Box<Expression>,
         true_branch: Block,
         false_branch: Option<Block>,
+        line: Line,
+        position: Position,
+    },
+    Module {
+        name: String,
+        line: Line,
+        position: Position,
+    },
+    Use {
+        name: String,
         line: Line,
         position: Position,
     },

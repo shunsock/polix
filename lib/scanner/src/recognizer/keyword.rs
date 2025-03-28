@@ -82,8 +82,8 @@ pub fn recognize_keyword(value: String, line: Line, position: Position) -> Optio
             line,
             position,
         )),
-        "global" => Some(Token::new(
-            TokenKind::Keyword(Keyword::Declaration(Declaration::Global)),
+        "pub" => Some(Token::new(
+            TokenKind::Keyword(Keyword::Declaration(Declaration::public)),
             line,
             position,
         )),
