@@ -99,6 +99,11 @@ pub enum Expression {
         line: Line,
         position: Position,
     },
+    ListLiteral {
+        elements: Vec<Expression>,
+        line: Line,
+        position: Position,
+    },
     StructLiteral {
         name: String,
         fields: HashMap<String, Expression>,
