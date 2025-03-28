@@ -70,10 +70,13 @@ pub enum Control {
 #[derive(Debug, Clone, PartialEq)]
 pub enum Declaration {
     As,
+    Assign,
     Define,
     Function,
+    Global,
     Let,
     Module,
+    Mutable,
     New,
     Return,
     Struct,

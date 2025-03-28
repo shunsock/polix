@@ -77,6 +77,16 @@ pub fn recognize_keyword(value: String, line: Line, position: Position) -> Optio
             line,
             position,
         )),
+        "mut" => Some(Token::new(
+            TokenKind::Keyword(Keyword::Declaration(Declaration::Mutable)),
+            line,
+            position,
+        )),
+        "global" => Some(Token::new(
+            TokenKind::Keyword(Keyword::Declaration(Declaration::Global)),
+            line,
+            position,
+        )),
         "module" => Some(Token::new(
             TokenKind::Keyword(Keyword::Declaration(Declaration::Module)),
             line,
@@ -99,6 +109,11 @@ pub fn recognize_keyword(value: String, line: Line, position: Position) -> Optio
         )),
         "use" => Some(Token::new(
             TokenKind::Keyword(Keyword::Declaration(Declaration::Use)),
+            line,
+            position,
+        )),
+        ":=" => Some(Token::new(
+            TokenKind::Keyword(Keyword::Declaration(Declaration::Assign)),
             line,
             position,
         )),
