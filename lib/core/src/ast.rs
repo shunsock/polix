@@ -1,9 +1,71 @@
 use crate::source_code::{Line, Position};
 use std::collections::HashMap;
 
-pub enum Ast {
-    Expression(Box<Expression>),
-    Statement(Box<Statement>),
+pub enum Constant {
+    Integer(i64),
+    Float(f64),
+    String(String),
+    Boolean(bool),
+    None,
+}
+
+pub enum Operator {
+    // Boolean
+    And,
+    Equal,
+    Not,
+    NotEqual,
+    Or,
+    // Arithmetic
+    Addition,
+    Division,
+    Modulus,
+    Multiplication,
+    Power,
+    Subtraction,
+}
+
+pub struct GenericParameter {
+    pub name: String,
+}
+
+pub enum PolixType {
+    Integer,
+    Float,
+    String,
+    Boolean,
+    Void,
+    List {
+        content_type: Box<PolixType>,
+        length: Option<usize>,
+    },
+    Struct(String),
+    Option(Box<PolixType>),
+    Result {
+        ok: Box<PolixType>,
+        error: Box<PolixType>,
+    },
+}
+
+pub enum Primary {
+    Constant {
+        value: Constant,
+        line: Line,
+        position: Position,
+    },
+    FunctionCall {
+        name: String,
+        arguments: HashMap<String, PolixType>,
+        generics: Option<Vec<GenericParameter>>,
+        line: Line,
+        position: Position,
+    },
+    VariableCall {
+        name: String,
+        generics: Option<Vec<GenericParameter>>,
+        line: Line,
+        position: Position,
+    },
 }
 
 pub enum Expression {
@@ -37,51 +99,6 @@ pub enum Expression {
         line: Line,
         position: Position,
     },
-}
-
-pub enum Primary {
-    Constant {
-        value: Constant,
-        line: Line,
-        position: Position,
-    },
-    FunctionCall {
-        name: String,
-        arguments: HashMap<String, PolixType>,
-        generics: Option<Vec<GenericParameter>>,
-        line: Line,
-        position: Position,
-    },
-    VariableCall {
-        name: String,
-        generics: Option<Vec<GenericParameter>>,
-        line: Line,
-        position: Position,
-    },
-}
-
-pub enum Operator {
-    // Boolean
-    And,
-    Equal,
-    Not,
-    NotEqual,
-    Or,
-    // Arithmetic
-    Addition,
-    Division,
-    Modulus,
-    Multiplication,
-    Power,
-    Subtraction,
-}
-
-pub enum Constant {
-    Integer(i64),
-    Float(f64),
-    String(String),
-    Boolean(bool),
-    None,
 }
 
 pub struct Block {
@@ -148,25 +165,7 @@ pub enum Statement {
     },
 }
 
-pub enum PolixType {
-    Integer,
-    Float,
-    String,
-    Boolean,
-    Void,
-    List {
-        content_type: Box<PolixType>,
-        contents: Vec<PolixType>,
-        length: Option<usize>,
-    },
-    Struct(String),
-    Option(Box<PolixType>),
-    Result {
-        ok: Box<PolixType>,
-        error: Box<PolixType>,
-    },
-}
-
-pub struct GenericParameter {
-    pub name: String,
+pub enum Ast {
+    Expression(Box<Expression>),
+    Statement(Box<Statement>),
 }
