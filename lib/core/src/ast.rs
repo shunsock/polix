@@ -61,15 +61,19 @@ pub enum Primary {
 }
 
 pub enum Operator {
-    Add,
+    // Boolean
     And,
-    Or,
+    Equal,
     Not,
-    Subtract,
-    Multiply,
-    Divide,
+    NotEqual,
+    Or,
+    // Arithmetic
+    Addition,
+    Division,
     Modulus,
+    Multiplication,
     Power,
+    Subtraction,
 }
 
 pub enum Constant {
@@ -81,9 +85,10 @@ pub enum Constant {
 }
 
 pub enum Statement {
-    LetVariable {
-        name: String,
+    Assign {
+        assign_name: String,
         mutable: bool,
+        public: bool,
         kind: PolixType,
         value: Box<Expression>,
         line: Line,
@@ -94,6 +99,7 @@ pub enum Statement {
         generics: Option<Vec<GenericParameter>>,
         arguments: HashMap<String, PolixType>,
         return_type: PolixType,
+        public: bool,
         body: Vec<Ast>,
         line: Line,
         position: Position,
@@ -101,6 +107,7 @@ pub enum Statement {
     DefineStruct {
         name: String,
         generics: Option<Vec<GenericParameter>>,
+        public: bool,
         mutable: bool,
         fields: Vec<(String, PolixType)>,
         line: Line,
@@ -122,6 +129,13 @@ pub enum Statement {
     Loop {
         condition: Box<Ast>,
         body: Vec<Ast>,
+        line: Line,
+        position: Position,
+    },
+    Switch {
+        expression: Box<Ast>,
+        cases: Vec<(Constant, Vec<Ast>)>,
+        default: Option<Vec<Ast>>,
         line: Line,
         position: Position,
     },
