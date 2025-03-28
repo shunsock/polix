@@ -99,6 +99,23 @@ pub enum Expression {
         line: Line,
         position: Position,
     },
+    StructLiteral {
+        name: String,
+        fields: HashMap<String, Expression>,
+        line: Line,
+        position: Position,
+    },
+    OptionLiteral {
+        value: Option<Box<Expression>>,
+        line: Line,
+        position: Position,
+    },
+    ResultLiteral {
+        is_ok: bool,
+        value: Box<Expression>,
+        line: Line,
+        position: Position,
+    },
 }
 
 pub struct Block {
