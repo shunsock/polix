@@ -2,7 +2,6 @@ mod identifier;
 mod keyword;
 mod literal_number;
 mod literal_string;
-mod ast;
 
 use core::source_code::{Line, Position};
 use core::token::Token;

@@ -1,9 +1,71 @@
 use crate::source_code::{Line, Position};
 use std::collections::HashMap;
 
-pub enum Ast {
-    Expression(Box<Expression>),
-    Statement(Box<Statement>),
+pub enum Constant {
+    Integer(i64),
+    Float(f64),
+    String(String),
+    Boolean(bool),
+    None,
+}
+
+pub enum Operator {
+    // Boolean
+    And,
+    Equal,
+    Not,
+    NotEqual,
+    Or,
+    // Arithmetic
+    Addition,
+    Division,
+    Modulus,
+    Multiplication,
+    Power,
+    Subtraction,
+}
+
+pub struct GenericParameter {
+    pub name: String,
+}
+
+pub enum PolixType {
+    Integer,
+    Float,
+    String,
+    Boolean,
+    Void,
+    List {
+        content_type: Box<PolixType>,
+        length: Option<usize>,
+    },
+    Struct(String),
+    Option(Box<PolixType>),
+    Result {
+        ok: Box<PolixType>,
+        error: Box<PolixType>,
+    },
+}
+
+pub enum Primary {
+    Constant {
+        value: Constant,
+        line: Line,
+        position: Position,
+    },
+    FunctionCall {
+        name: String,
+        arguments: HashMap<String, PolixType>,
+        generics: Option<Vec<GenericParameter>>,
+        line: Line,
+        position: Position,
+    },
+    VariableCall {
+        name: String,
+        generics: Option<Vec<GenericParameter>>,
+        line: Line,
+        position: Position,
+    },
 }
 
 pub enum Expression {
@@ -37,115 +99,105 @@ pub enum Expression {
         line: Line,
         position: Position,
     },
-}
-
-pub enum Primary {
-    Constant {
-        value: Constant,
+    ListLiteral {
+        elements: Vec<Expression>,
         line: Line,
         position: Position,
     },
-    FunctionCall {
+    StructLiteral {
         name: String,
-        arguments: HashMap<String, PolixType>,
-        generics: Option<Vec<GenericParameter>>,
+        fields: HashMap<String, Expression>,
         line: Line,
         position: Position,
     },
-    VariableCall {
-        name: String,
-        generics: Option<Vec<GenericParameter>>,
+    OptionLiteral {
+        value: Option<Box<Expression>>,
+        line: Line,
+        position: Position,
+    },
+    ResultLiteral {
+        is_ok: bool,
+        value: Box<Expression>,
         line: Line,
         position: Position,
     },
 }
 
-pub enum Operator {
-    Add,
-    And,
-    Or,
-    Not,
-    Subtract,
-    Multiply,
-    Divide,
-    Modulus,
-    Power,
-}
-
-pub enum Constant {
-    Integer(i64),
-    Float(f64),
-    String(String),
-    Boolean(bool),
-    None,
+pub struct Block {
+    pub statements: Vec<Ast>,
+    pub line: Line,
+    pub position: Position,
 }
 
 pub enum Statement {
-    LetVariable {
-        name: String,
+    Assign {
+        assign_name: String,
         mutable: bool,
+        public: bool,
         kind: PolixType,
         value: Box<Expression>,
         line: Line,
         position: Position,
     },
+    Block(Block),
     DefineFunction {
         name: String,
         generics: Option<Vec<GenericParameter>>,
         arguments: HashMap<String, PolixType>,
         return_type: PolixType,
-        body: Vec<Ast>,
+        public: bool,
+        body: Block,
         line: Line,
         position: Position,
     },
     DefineStruct {
         name: String,
         generics: Option<Vec<GenericParameter>>,
+        public: bool,
         mutable: bool,
         fields: Vec<(String, PolixType)>,
         line: Line,
         position: Position,
     },
     If {
-        condition: Box<Ast>,
-        true_branch: Vec<Ast>,
-        false_branch: Option<Vec<Ast>>,
+        condition: Box<Expression>,
+        true_branch: Block,
+        false_branch: Option<Block>,
+        line: Line,
+        position: Position,
+    },
+    Module {
+        name: String,
+        line: Line,
+        position: Position,
+    },
+    Use {
+        name: String,
         line: Line,
         position: Position,
     },
     While {
-        condition: Box<Ast>,
-        body: Vec<Ast>,
+        condition: Box<Expression>,
+        body: Vec<Block>,
         line: Line,
         position: Position,
     },
     Loop {
-        condition: Box<Ast>,
-        body: Vec<Ast>,
+        condition: Box<Expression>,
+        body: Vec<Block>,
+        line: Line,
+        position: Position,
+    },
+    Switch {
+        expression: Box<Expression>,
+        cases: Vec<(Constant, Block)>,
+        default: Option<Block>,
         line: Line,
         position: Position,
     },
 }
 
-pub enum PolixType {
-    Integer,
-    Float,
-    String,
-    Boolean,
-    Void,
-    List {
-        content_type: Box<PolixType>,
-        contents: Vec<PolixType>,
-        length: Option<usize>,
-    },
-    Struct(String),
-    Option(Box<PolixType>),
-    Result {
-        ok: Box<PolixType>,
-        error: Box<PolixType>,
-    },
-}
-
-pub struct GenericParameter {
-    pub name: String,
+pub enum Ast {
+    Expression(Box<Expression>),
+    Statement(Box<Statement>),
 }
