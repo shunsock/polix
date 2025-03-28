@@ -94,7 +94,7 @@ pub enum Statement {
     Assign {
         assign_name: String,
         mutable: bool,
-        public: bool,
+        global: bool,
         kind: PolixType,
         value: Box<Expression>,
         line: Line,
@@ -106,7 +106,7 @@ pub enum Statement {
         generics: Option<Vec<GenericParameter>>,
         arguments: HashMap<String, PolixType>,
         return_type: PolixType,
-        public: bool,
+        global: bool,
         body: Block,
         line: Line,
         position: Position,
@@ -114,7 +114,7 @@ pub enum Statement {
     DefineStruct {
         name: String,
         generics: Option<Vec<GenericParameter>>,
-        public: bool,
+        global: bool,
         mutable: bool,
         fields: Vec<(String, PolixType)>,
         line: Line,
